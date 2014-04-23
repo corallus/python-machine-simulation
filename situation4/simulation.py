@@ -1,4 +1,4 @@
-__author__ = 'vincent'
+__author__ = 'Vincent van Bergen'
 
 import simpy
 import random
