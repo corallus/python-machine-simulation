@@ -2,7 +2,7 @@ __author__ = 'Vincent van Bergen'
 
 import unittest
 
-from simulation import *
+from machine_simulation.simulation import *
 from testsimulation import TestComponentType as ComponentType
 
 
@@ -48,7 +48,7 @@ class TestSinglePart(unittest.TestCase):
         # the delivery time of a part has to be smaller then the replacement time, such that the stock level is stable
         # 1 < 5 + 3
         part_component_type = ComponentType(self.env, "Part A", 5, CA, 1, CHA, 3, 100)
-        machine_component_type = ComponentType(self.env, "Machine", 0, CAB, LAB, CHAB, TRABM, SAB)
+        machine_component_type = ComponentType(self.env, "Machine", 0, CAB, LAB, CHAB, TRAB, SAB)
         maintenance_men = simpy.Resource(self.env, capacity=100)
         machine = PolicyO(self.env, 'Test machine 1', machine_component_type, [part_component_type], 10, maintenance_men)
         self.part = machine.parts[0]
@@ -100,8 +100,8 @@ class TestMultipleParts(unittest.TestCase):
         """
         self.env = simpy.Environment()
         part_component_types = [
-            ComponentType(self.env, "Part A", 5, CA, LA, CHA, TRAM, 100),
-            ComponentType(self.env, "Part B", 6, CB, LB, CHB, TRBM, 100)
+            ComponentType(self.env, "Part A", 5, CA, LA, CHA, TRA, 100),
+            ComponentType(self.env, "Part B", 6, CB, LB, CHB, TRB, 100)
         ]
         machine_component_type = ComponentType(self.env, "Test machine", 5, 15, 1, 3, 4, 50)
         maintenance_men = simpy.Resource(self.env, capacity=100)
@@ -122,11 +122,18 @@ class TestMultipleParts(unittest.TestCase):
         """
         first_part = self.machine.parts[0]
         second_part = self.machine.parts[1]
+        first_simulation = first_part.component_type.mean + first_part.component_type.time_replacement + \
+                           second_part.component_type.mean + 1
         self.env.run(
-            until=first_part.component_type.mean + first_part.component_type.time_replacement +
-            second_part.component_type.mean + 1
+            until=first_simulation
         )
         self.assertTrue(second_part.broken)
+        self.env.run(
+            until=first_simulation+second_part.component_type.time_replacement
+        )
+        self.assertTrue(second_part.broken)
+
+        self.env.run(until=100)
 
 
 class TestMachine(unittest.TestCase):
@@ -134,10 +141,10 @@ class TestMachine(unittest.TestCase):
     def setUp(self):
         self.env = simpy.Environment()
         self.part_component_types = [
-            ComponentType(self.env, "Part A", 4, CA, LA, CHA, TRAM, 1),
-            ComponentType(self.env, "Part B", 5, CB, LB, CHB, TRBM, 1)
+            ComponentType(self.env, "Part A", 4, CA, LA, CHA, TRA, 1),
+            ComponentType(self.env, "Part B", 5, CB, LB, CHB, TRB, 1)
         ]
-        self.machine_component_type = ComponentType(self.env, "Machine", 0, CAB, LAB, CHAB, TRABM, SAB)
+        self.machine_component_type = ComponentType(self.env, "Machine", 0, CAB, LAB, CHAB, TRAB, SAB)
         self.maintenance_men = simpy.Resource(self.env, capacity=100)
 
     def test_policy_o(self):

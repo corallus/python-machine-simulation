@@ -2,6 +2,7 @@ __author__ = 'Vincent van Bergen'
 
 import simpy
 import random
+import sys
 
 RANDOM_SEED = 42
 
@@ -12,17 +13,14 @@ CA = 8  # cost part A
 CB = 6  # cost part B
 CAB = 15  # cost module AB
 CD = 10  # lost net profit per unit downtime per machine
-TRAO = 3  # time required for replacing 1 part A by an operator
-TRBO = 3  # time required for replacing 1 part B by an operator
-TRABO = 2  # time required for replacing 1 part AB by an operator
+TRA = 3  # time required for replacing 1 part A by an operator
+TRB = 3  # time required for replacing 1 part B by an operator
+TRAB = 2  # time required for replacing 1 part AB by an operator
 NUMBER_MACHINES = 15  # number of machines
 SIMULATION_TIME = 1825  # time simulation has to run
 
 #situation2
 NUMBER_MAINTENANCE_MEN = 3  # number of maintenance men
-TRAM = 3  # time required for replacing 1 part A by a maintenance man
-TRBM = 3  # time required for replacing 1 part B by a maintenance man
-TRABM = 2  # time required for replacing 1 part AB by a maintenance man
 
 #situation 3
 
@@ -70,7 +68,10 @@ class ComponentType(object):
 
     def time_to_failure(self):
         """Return time until next failure"""
-        return random.expovariate(self.mean)
+        try:
+            return random.expovariate(1.0/self.mean)
+        except ZeroDivisionError:
+            return sys.maxint
 
 
 class Part(object):
@@ -88,11 +89,12 @@ class Part(object):
 
     def break_part(self):
         self.broken = False
-        while not self.broken:
+        while not self.broken and not self.machine.broken:
             yield self.env.timeout(self.component_type.time_to_failure())
             if not self.broken and not self.machine.broken:
                 # parts can not breakdown during repair
                 self.broken = True
+                # print('%s breaks @ %f' % (self.component_type.name, self.env.now))
                 self.machine.broken = True
                 # machine not functioning during replacement
                 self.machine.process.interrupt()
@@ -103,15 +105,14 @@ class Part(object):
             yield req
             with self.maintenance_men.request() as maintainer:
                 yield maintainer
-                yield self.env.timeout(self.component_type.time_replacement)
                 self.purchase_costs += self.component_type.unit_purchase_costs
+                yield self.env.timeout(self.component_type.time_replacement)
 
 
 class Machine(object):
     downtime_costs = 0
 
     def __init__(self, env, name, component_type, part_specifications, costs_per_unit_downtime, maintenance_men):
-        self.parts_made = 0
         self.env = env
         self.name = name
         self.component_type = component_type
@@ -137,23 +138,23 @@ class Machine(object):
                 broken_since = self.env.now
                 yield self.env.process(self.repair())
                 self.downtime_costs += (self.env.now - broken_since) * self.costs_per_unit_downtime
-                print('%s repaired after %d - %d time' % (self.name, self.env.now, broken_since))
-                print('total costs: %d' % self.downtime_costs)
+                # print('%s repaired at %f' % (self.name, self.env.now))
+                # print('total downtime costs: %f' % self.downtime_costs)
                 self.start()
 
     def repair(self):
         raise NotImplementedError
 
     def replace(self):
-        print('replace %s' % self.component_type.name)
+        # print('replace %s' % self.component_type.name)
         with self.component_type.stock.get(1) as req:
             yield req
             self.env.process(self.component_type.order())
-            print('%s available' % self.component_type.name)
+            # print('%s available' % self.component_type.name)
             with self.maintenance_men.request() as maintainer:
                 yield maintainer
-                print('%s is being replaced' % self.component_type.name)
-                yield self.env.timeout(self.component_type.time_replacement)
+            # print('%s is being replaced' % self.component_type.name)
+            yield self.env.timeout(self.component_type.time_replacement)
 
     def costs(self):
         total_costs = 0
@@ -194,35 +195,3 @@ class PolicyB(Machine):
 class PolicyAB(Machine):
     def repair(self):
         yield self.env.process(self.replace())
-
-
-def setup():
-    # Setup and start the simulation
-    print('Start simulation')
-    random.seed(RANDOM_SEED)  # This helps reproducing the results
-
-    # Create an environment and start the setup process
-    env = simpy.Environment()
-
-    part_specifications = [
-        ComponentType(env, "Part A", MA, CA, LA, CHA, TRAM, SA),
-        ComponentType(env, "Part B", MB, CB, LB, CHB, TRBM, SB)
-    ]
-
-    maintenance_men = simpy.Resource(env, capacity=NUMBER_MAINTENANCE_MEN)
-    machine_specification = ComponentType(env, "Machine", 0, CAB, LAB, CHAB, TRABM, SAB)
-    machines = [PolicyAB(env, 'Machine %d' % i, machine_specification, part_specifications, CD, maintenance_men)
-                for i in range(NUMBER_MACHINES)]
-
-    # Execute!
-    env.run(until=SIMULATION_TIME)
-
-    machine_costs = sum([machine.costs() for machine in machines])
-    inventory_holding_costs = sum([part_specification.inventory_holding_costs
-                                   for part_specification in part_specifications])
-
-    # Analyis/results
-    print('Results after %s time' % SIMULATION_TIME)
-    print('Total costs are: %d')
-    print('%d due to purchase costs and downtime' % machine_costs)
-    print('%d due to inventory holding costs' % inventory_holding_costs)

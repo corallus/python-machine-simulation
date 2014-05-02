@@ -1,6 +1,6 @@
 __author__ = 'Vincent van Bergen'
 
-from simulation import *
+from machine_simulation.simulation import *
 
 
 class TestComponentType(ComponentType):
