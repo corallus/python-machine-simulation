@@ -117,25 +117,6 @@ class TestMultipleParts(unittest.TestCase):
         self.env.run(until=max([part.component_type.mean for part in self.machine.parts]) + 1)
         self.assertNotEqual(self.machine.parts[0].broken, self.machine.parts[1].broken)
 
-    def test_memorylessness(self):
-        """
-        This test succeeds when the breakdown of a part is independent of the past
-        """
-        first_part = self.machine.parts[0]
-        second_part = self.machine.parts[1]
-        first_simulation = first_part.component_type.mean + first_part.component_type.time_replacement + \
-                           second_part.component_type.mean + 1
-        self.env.run(
-            until=first_simulation
-        )
-        self.assertTrue(second_part.broken)
-        self.env.run(
-            until=first_simulation+second_part.component_type.time_replacement
-        )
-        self.assertTrue(second_part.broken)
-
-        self.env.run(until=100)
-
 
 class TestMachine(unittest.TestCase):
 
