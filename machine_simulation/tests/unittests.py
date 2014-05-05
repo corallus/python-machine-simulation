@@ -14,19 +14,17 @@ class TestComponentType(unittest.TestCase):
 
     def setUp(self):
         self.env = simpy.Environment()
-        self.component_type = ComponentType(self.env, 'test part', 0, 10, 10, 10, 0, 10)
+        self.component_type = ComponentType(self.env, 'test part', MA, CA, LA, CHA, TRA, SA)
 
     def test_single_order(self):
-        print('testing single order')
         stock = self.component_type.stock
         stock.get(1)
         self.env.process(self.component_type.order())
-        self.assertEqual(stock.level, 9)
-        self.env.run(until=self.component_type.delivery_time + 1)
-        self.assertEqual(stock.level, 10)
+        self.assertEqual(stock.level, self.component_type.safety_stock-1)
+        self.env.run(until=self.component_type.delivery_time+1)
+        self.assertEqual(stock.level, self.component_type.safety_stock)
 
     def test_multiple_orders(self):
-        print('testing multiple orders')
         stock = self.component_type.stock
         stock.get(1)
         self.env.process(self.component_type.order())
@@ -34,9 +32,20 @@ class TestComponentType(unittest.TestCase):
         self.env.process(self.component_type.order())
         stock.get(1)
         self.env.process(self.component_type.order())
-        self.assertEqual(stock.level, 7)
+        self.assertEqual(stock.level, max(0, self.component_type.safety_stock-3))
         self.env.run(until=self.component_type.delivery_time + 1)
-        self.assertEqual(stock.level, 10)
+        self.assertEqual(stock.level, self.component_type.safety_stock)
+
+    def test_inventory(self):
+        self.env.process(self.component_type.inventory())
+        stock = self.component_type.stock
+        stock.get(1)
+        self.env.process(self.component_type.order())
+        self.env.run(until=self.component_type.delivery_time + 1)
+        self.assertEqual(self.component_type.inventory_holding_costs,
+                         self.component_type.delivery_time * (
+                             self.component_type.inventory_holding_costs * (self.component_type.safety_stock - 1)
+                         ) + self.component_type.safety_stock * self.component_type.inventory_holding_costs)
 
 
 class TestSinglePart(unittest.TestCase):
@@ -48,13 +57,13 @@ class TestSinglePart(unittest.TestCase):
         self.env = simpy.Environment()
         # the delivery time of a part has to be smaller then the replacement time, such that the stock level is stable
         # 1 < 5 + 3
-        part_component_type = ComponentType(self.env, "Part A", 5, CA, 1, CHA, 3, 100)
+        part_component_type = ComponentType(self.env, "Part A", MA, CA, LA, CHA, TRA, SA)
         machine_component_type = ComponentType(self.env, "Machine", 0, CAB, LAB, CHAB, TRAB, SAB)
         maintenance_men = simpy.Resource(self.env, capacity=100)
-        machine = PolicyO(self.env, 'Test machine 1', machine_component_type, [part_component_type], 10, maintenance_men)
+        machine = PolicyO(self.env, 'Test machine 1', machine_component_type, [part_component_type], CD, maintenance_men)
         self.part = machine.parts[0]
 
-    def test_breaking(self):
+    def test_break_part(self):
         """
         Tests whether a part breaks after its' breakdown time
         """
@@ -101,12 +110,12 @@ class TestMultipleParts(unittest.TestCase):
         """
         self.env = simpy.Environment()
         part_component_types = [
-            ComponentType(self.env, "Part A", 5, CA, LA, CHA, TRA, 100),
-            ComponentType(self.env, "Part B", 6, CB, LB, CHB, TRB, 100)
+            ComponentType(self.env, "Part A", MA, CA, LA, CHA, TRA, SA),
+            ComponentType(self.env, "Part B", MB, CB, LB, CHB, TRB, SB)
         ]
-        machine_component_type = ComponentType(self.env, "Test machine", 5, 15, 1, 3, 4, 50)
-        maintenance_men = simpy.Resource(self.env, capacity=100)
-        self.machine = PolicyO(self.env, 'Test machine 1', machine_component_type, part_component_types, 10,
+        machine_component_type = ComponentType(self.env, "Test machine", 0, CAB, LAB, CHAB, TRAB, SAB)
+        maintenance_men = simpy.Resource(self.env, capacity=NUMBER_MAINTENANCE_MEN)
+        self.machine = PolicyO(self.env, 'Test machine 1', machine_component_type, part_component_types, CD,
                                maintenance_men)
 
     def test_not_multiple_broken(self):
@@ -123,17 +132,17 @@ class TestMachine(unittest.TestCase):
     def setUp(self):
         self.env = simpy.Environment()
         self.part_component_types = [
-            ComponentType(self.env, "Part A", 4, CA, LA, CHA, TRA, 1),
-            ComponentType(self.env, "Part B", 5, CB, LB, CHB, TRB, 1)
+            ComponentType(self.env, "Part A", MA, CA, LA, CHA, TRA, SA),
+            ComponentType(self.env, "Part B", MB, CB, LB, CHB, TRB, SB)
         ]
         self.machine_component_type = ComponentType(self.env, "Machine", 0, CAB, LAB, CHAB, TRAB, SAB)
-        self.maintenance_men = simpy.Resource(self.env, capacity=100)
+        self.maintenance_men = simpy.Resource(self.env, capacity=NUMBER_MAINTENANCE_MEN)
 
     def test_policy_o(self):
         """
         Tests whether the repair actually repairs the machine with policy O
         """
-        machine = PolicyO(self.env, 'Test machine 1', self.machine_component_type, self.part_component_types, 10,
+        machine = PolicyO(self.env, 'Test machine 1', self.machine_component_type, self.part_component_types, CD,
                           self.maintenance_men)
         first_part = machine.parts[0]
         self.env.run(until=first_part.component_type.mean + first_part.component_type.time_replacement + 1)
@@ -143,7 +152,7 @@ class TestMachine(unittest.TestCase):
         """
         Tests whether the repair actually repairs the machine with policy A
         """
-        machine = PolicyA(self.env, 'Test machine 1', self.machine_component_type, self.part_component_types, 10,
+        machine = PolicyA(self.env, 'Test machine 1', self.machine_component_type, self.part_component_types, CD,
                           self.maintenance_men)
         first_part = machine.parts[0]
         self.env.run(until=first_part.component_type.mean + machine.component_type.time_replacement + 1)
@@ -153,7 +162,7 @@ class TestMachine(unittest.TestCase):
         """
         Tests whether the repair actually repairs the machine with policy B
         """
-        machine = PolicyB(self.env, 'Test machine 1', self.machine_component_type, self.part_component_types, 10,
+        machine = PolicyB(self.env, 'Test machine 1', self.machine_component_type, self.part_component_types, CD,
                           self.maintenance_men)
         first_part = machine.parts[0]
         self.env.run(until=first_part.component_type.mean + first_part.component_type.time_replacement + 1)
@@ -163,7 +172,7 @@ class TestMachine(unittest.TestCase):
         """
         Tests whether the repair actually repairs the machine with policy AB
         """
-        machine = PolicyAB(self.env, 'Test machine 1', self.machine_component_type, self.part_component_types, 10,
+        machine = PolicyAB(self.env, 'Test machine 1', self.machine_component_type, self.part_component_types, CD,
                            self.maintenance_men)
         first_part = machine.parts[0]
         self.env.run(until=first_part.component_type.mean + machine.component_type.time_replacement + 1)
