@@ -1,0 +1,352 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Welcome to Replace module or part’s documentation! &mdash; Replace module or part 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Replace module or part 1.0 documentation" href="#" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="#">Replace module or part 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="welcome-to-replace-module-or-part-s-documentation">
+<h1>Welcome to Replace module or part&#8217;s documentation!<a class="headerlink" href="#welcome-to-replace-module-or-part-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>Contents:</p>
+<div class="toctree-wrapper compound">
+<ul class="simple">
+</ul>
+</div>
+<span class="target" id="module-machine_simulation.simulation"></span><dl class="class">
+<dt id="machine_simulation.simulation.ComponentType">
+<em class="property">class </em><tt class="descclassname">machine_simulation.simulation.</tt><tt class="descname">ComponentType</tt><big>(</big><em>env</em>, <em>name</em>, <em>mean</em>, <em>unit_purchase_costs</em>, <em>delivery_time</em>, <em>unit_holding_costs</em>, <em>time_replacement</em>, <em>safety_stock</em><big>)</big><a class="headerlink" href="#machine_simulation.simulation.ComponentType" title="Permalink to this definition">¶</a></dt>
+<dd><p>The specification of a part/module. This class is used for keeping track of inventory of this kind of component as
+well. Implementation of a (S-1,S) queue for inventory management</p>
+<dl class="method">
+<dt id="machine_simulation.simulation.ComponentType.inventory">
+<tt class="descname">inventory</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.simulation.ComponentType.inventory" title="Permalink to this definition">¶</a></dt>
+<dd><p>A process which keeps track if inventory holding costs</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="machine_simulation.simulation.ComponentType.order">
+<tt class="descname">order</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.simulation.ComponentType.order" title="Permalink to this definition">¶</a></dt>
+<dd><p>A process to order an item</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="machine_simulation.simulation.ComponentType.time_to_failure">
+<tt class="descname">time_to_failure</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.simulation.ComponentType.time_to_failure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the time until next failure if this component, using the mean time to failure of this component.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="machine_simulation.simulation.Machine">
+<em class="property">class </em><tt class="descclassname">machine_simulation.simulation.</tt><tt class="descname">Machine</tt><big>(</big><em>env</em>, <em>name</em>, <em>component_type</em>, <em>part_specifications</em>, <em>costs_per_unit_downtime</em>, <em>maintenance_men</em><big>)</big><a class="headerlink" href="#machine_simulation.simulation.Machine" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="machine_simulation.simulation.Machine.costs">
+<tt class="descname">costs</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.simulation.Machine.costs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Keeps track of the total costs of this machine, consisting of purchase costs of parts and modules as well as
+downtime costs
+:return: Int</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="machine_simulation.simulation.Machine.replace">
+<tt class="descname">replace</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.simulation.Machine.replace" title="Permalink to this definition">¶</a></dt>
+<dd><p>A process to replace this machine by a new one</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="machine_simulation.simulation.Machine.start">
+<tt class="descname">start</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.simulation.Machine.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts the machine</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="machine_simulation.simulation.Machine.working">
+<tt class="descname">working</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.simulation.Machine.working" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main machine production process</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="machine_simulation.simulation.Part">
+<em class="property">class </em><tt class="descclassname">machine_simulation.simulation.</tt><tt class="descname">Part</tt><big>(</big><em>env</em>, <em>component_type</em>, <em>machine</em>, <em>maintenance_men</em><big>)</big><a class="headerlink" href="#machine_simulation.simulation.Part" title="Permalink to this definition">¶</a></dt>
+<dd><p>An &#8220;instance&#8221; of a ComponentType. Belongs to a machine.</p>
+<dl class="method">
+<dt id="machine_simulation.simulation.Part.break_part">
+<tt class="descname">break_part</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.simulation.Part.break_part" title="Permalink to this definition">¶</a></dt>
+<dd><p>A one time process breaking a part after a while</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="machine_simulation.simulation.Part.replace">
+<tt class="descname">replace</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.simulation.Part.replace" title="Permalink to this definition">¶</a></dt>
+<dd><p>A process to replace this part by a new part</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="machine_simulation.simulation.PolicyA">
+<em class="property">class </em><tt class="descclassname">machine_simulation.simulation.</tt><tt class="descname">PolicyA</tt><big>(</big><em>env</em>, <em>name</em>, <em>component_type</em>, <em>part_specifications</em>, <em>costs_per_unit_downtime</em>, <em>maintenance_men</em><big>)</big><a class="headerlink" href="#machine_simulation.simulation.PolicyA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implementation of the repair method of a machine</p>
+<dl class="method">
+<dt id="machine_simulation.simulation.PolicyA.repair">
+<tt class="descname">repair</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.simulation.PolicyA.repair" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replace module if part A broken, else replace part</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="machine_simulation.simulation.PolicyAB">
+<em class="property">class </em><tt class="descclassname">machine_simulation.simulation.</tt><tt class="descname">PolicyAB</tt><big>(</big><em>env</em>, <em>name</em>, <em>component_type</em>, <em>part_specifications</em>, <em>costs_per_unit_downtime</em>, <em>maintenance_men</em><big>)</big><a class="headerlink" href="#machine_simulation.simulation.PolicyAB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implementation of the repair method of a machine</p>
+<dl class="method">
+<dt id="machine_simulation.simulation.PolicyAB.repair">
+<tt class="descname">repair</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.simulation.PolicyAB.repair" title="Permalink to this definition">¶</a></dt>
+<dd><p>Always replace module</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="machine_simulation.simulation.PolicyB">
+<em class="property">class </em><tt class="descclassname">machine_simulation.simulation.</tt><tt class="descname">PolicyB</tt><big>(</big><em>env</em>, <em>name</em>, <em>component_type</em>, <em>part_specifications</em>, <em>costs_per_unit_downtime</em>, <em>maintenance_men</em><big>)</big><a class="headerlink" href="#machine_simulation.simulation.PolicyB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implementation of the repair method of a machine</p>
+<dl class="method">
+<dt id="machine_simulation.simulation.PolicyB.repair">
+<tt class="descname">repair</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.simulation.PolicyB.repair" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replace module if part B broken, else replace part</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="machine_simulation.simulation.PolicyO">
+<em class="property">class </em><tt class="descclassname">machine_simulation.simulation.</tt><tt class="descname">PolicyO</tt><big>(</big><em>env</em>, <em>name</em>, <em>component_type</em>, <em>part_specifications</em>, <em>costs_per_unit_downtime</em>, <em>maintenance_men</em><big>)</big><a class="headerlink" href="#machine_simulation.simulation.PolicyO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implementation of the repair method of a machine</p>
+<dl class="method">
+<dt id="machine_simulation.simulation.PolicyO.repair">
+<tt class="descname">repair</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.simulation.PolicyO.repair" title="Permalink to this definition">¶</a></dt>
+<dd><p>Always replace parts individually</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-machine_simulation.tests.unittests"></span><dl class="class">
+<dt id="machine_simulation.tests.unittests.TestComponentType">
+<em class="property">class </em><tt class="descclassname">machine_simulation.tests.unittests.</tt><tt class="descname">TestComponentType</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestComponentType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests whether component_type behaves like S-1 queue and tests the inventory holding costs</p>
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestComponentType.setUp">
+<tt class="descname">setUp</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestComponentType.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialises a simulation environment and a ComponentType</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestComponentType.test_inventory">
+<tt class="descname">test_inventory</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestComponentType.test_inventory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests whether ComponentType keeps track of correct inventory costs</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestComponentType.test_multiple_orders">
+<tt class="descname">test_multiple_orders</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestComponentType.test_multiple_orders" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests whether stock is refilled after multiple orders</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestComponentType.test_single_order">
+<tt class="descname">test_single_order</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestComponentType.test_single_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests whether the stock is refilled after a single order</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="machine_simulation.tests.unittests.TestMachine">
+<em class="property">class </em><tt class="descclassname">machine_simulation.tests.unittests.</tt><tt class="descname">TestMachine</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestMachine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests behaviour of a single machine</p>
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestMachine.setUp">
+<tt class="descname">setUp</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestMachine.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialises a simulation environment and 2 Parts</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestMachine.test_policy_a">
+<tt class="descname">test_policy_a</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestMachine.test_policy_a" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests whether the repair actually repairs the machine with policy A</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestMachine.test_policy_ab">
+<tt class="descname">test_policy_ab</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestMachine.test_policy_ab" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests whether the repair actually repairs the machine with policy AB</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestMachine.test_policy_b">
+<tt class="descname">test_policy_b</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestMachine.test_policy_b" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests whether the repair actually repairs the machine with policy B</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestMachine.test_policy_o">
+<tt class="descname">test_policy_o</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestMachine.test_policy_o" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests whether the repair actually repairs the machine with policy O</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="machine_simulation.tests.unittests.TestMultipleParts">
+<em class="property">class </em><tt class="descclassname">machine_simulation.tests.unittests.</tt><tt class="descname">TestMultipleParts</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestMultipleParts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test the relation between breakdowns of multiple parts of the same machine</p>
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestMultipleParts.setUp">
+<tt class="descname">setUp</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestMultipleParts.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialises a simulation environment and a Machine consisting of 2 parts</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestMultipleParts.test_not_multiple_broken">
+<tt class="descname">test_not_multiple_broken</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestMultipleParts.test_not_multiple_broken" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests whether multiple parts of a machine can be broken at the same time. Specifically this tests whether some
+part breaks when another part is already broken</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="machine_simulation.tests.unittests.TestSinglePart">
+<em class="property">class </em><tt class="descclassname">machine_simulation.tests.unittests.</tt><tt class="descname">TestSinglePart</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestSinglePart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests machine with a single part</p>
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestSinglePart.setUp">
+<tt class="descname">setUp</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestSinglePart.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialises a simulation environment and a Machine with one Part</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestSinglePart.test_break_part">
+<tt class="descname">test_break_part</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestSinglePart.test_break_part" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests whether a part breaks after its&#8217; breakdown time</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestSinglePart.test_inventory_costs">
+<tt class="descname">test_inventory_costs</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestSinglePart.test_inventory_costs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests whether the inventory costs are added to a product component_types&#8217; costs</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestSinglePart.test_replace">
+<tt class="descname">test_replace</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestSinglePart.test_replace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests whether the replace actually replaces the part</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
+<li><a class="reference internal" href="py-modindex.html"><em>Module Index</em></a></li>
+<li><a class="reference internal" href="search.html"><em>Search Page</em></a></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Welcome to Replace module or part&#8217;s documentation!</a></li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="#">Replace module or part 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Vincent van Bergen.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
