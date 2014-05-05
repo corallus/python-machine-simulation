@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Replace module or part documentation build configuration file, created by
+# Machine simulation documentation build configuration file, created by
 # sphinx-quickstart on Mon May  5 22:01:10 2014.
 #
 # This file is execfile()d with the current directory set to its
@@ -48,7 +48,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Replace module or part'
+project = u'Machine simulation'
 copyright = u'2014, Vincent van Bergen'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -181,7 +181,7 @@ html_static_path = ['_static']
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'Replacemoduleorpartdoc'
+htmlhelp_basename = 'Machinesimulationdoc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -201,7 +201,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  ('index', 'Replacemoduleorpart.tex', u'Replace module or part Documentation',
+  ('index', 'Machinesimulation.tex', u'Machine simulation Documentation',
    u'Vincent van Bergen', 'manual'),
 ]
 
@@ -231,7 +231,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'replacemoduleorpart', u'Replace module or part Documentation',
+    ('index', 'machinesimulation', u'Machine simulation Documentation',
      [u'Vincent van Bergen'], 1)
 ]
 
@@ -245,8 +245,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'Replacemoduleorpart', u'Replace module or part Documentation',
-   u'Vincent van Bergen', 'Replacemoduleorpart', 'One line description of project.',
+  ('index', 'Machinesimulation', u'Machine simulation Documentation',
+   u'Vincent van Bergen', 'Machinesimulation', 'Simulation of break down costs of multiple machines.',
    'Miscellaneous'),
 ]
 
