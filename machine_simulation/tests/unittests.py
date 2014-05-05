@@ -4,6 +4,7 @@ import unittest
 
 from machine_simulation.simulation import *
 from testsimulation import TestComponentType as ComponentType
+from machine_simulation.input import *
 
 
 class TestComponentType(unittest.TestCase):

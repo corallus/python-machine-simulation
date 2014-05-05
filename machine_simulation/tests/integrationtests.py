@@ -3,6 +3,7 @@ import unittest
 
 from machine_simulation.simulation import *
 import sys
+from machine_simulation.input import *
 
 
 class TestSituation1(unittest.TestCase):
