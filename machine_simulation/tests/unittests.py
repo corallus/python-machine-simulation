@@ -9,14 +9,20 @@ from machine_simulation.input import *
 
 class TestComponentType(unittest.TestCase):
     """
-    Test whether component_type behaves like S-1 queue
+    Tests whether component_type behaves like S-1 queue and tests the inventory holding costs
     """
 
     def setUp(self):
+        """
+        Initialises a simulation environment and a ComponentType
+        """
         self.env = simpy.Environment()
         self.component_type = ComponentType(self.env, 'test part', MA, CA, LA, CHA, TRA, SA)
 
     def test_single_order(self):
+        """
+        Tests whether the stock is refilled after a single order
+        """
         stock = self.component_type.stock
         stock.get(1)
         self.env.process(self.component_type.order())
@@ -25,6 +31,9 @@ class TestComponentType(unittest.TestCase):
         self.assertEqual(stock.level, self.component_type.safety_stock)
 
     def test_multiple_orders(self):
+        """
+        Tests whether stock is refilled after multiple orders
+        """
         stock = self.component_type.stock
         stock.get(1)
         self.env.process(self.component_type.order())
@@ -37,6 +46,9 @@ class TestComponentType(unittest.TestCase):
         self.assertEqual(stock.level, self.component_type.safety_stock)
 
     def test_inventory(self):
+        """
+        Tests whether ComponentType keeps track of correct inventory costs
+        """
         self.env.process(self.component_type.inventory())
         stock = self.component_type.stock
         stock.get(1)
@@ -50,16 +62,19 @@ class TestComponentType(unittest.TestCase):
 
 class TestSinglePart(unittest.TestCase):
     """
-    Test the failure of a machine with a single part
+    Tests machine with a single part
     """
 
     def setUp(self):
+        """
+        Initialises a simulation environment and a Machine with one Part
+        """
         self.env = simpy.Environment()
         # the delivery time of a part has to be smaller then the replacement time, such that the stock level is stable
         # 1 < 5 + 3
         part_component_type = ComponentType(self.env, "Part A", MA, CA, LA, CHA, TRA, SA)
         machine_component_type = ComponentType(self.env, "Machine", 0, CAB, LAB, CHAB, TRAB, SAB)
-        maintenance_men = simpy.Resource(self.env, capacity=100)
+        maintenance_men = simpy.Resource(self.env, capacity=NUMBER_MAINTENANCE_MEN)
         machine = PolicyO(self.env, 'Test machine 1', machine_component_type, [part_component_type], CD, maintenance_men)
         self.part = machine.parts[0]
 
@@ -106,7 +121,7 @@ class TestMultipleParts(unittest.TestCase):
 
     def setUp(self):
         """
-        Setup a machine consisting of two parts
+        Initialises a simulation environment and a Machine consisting of 2 parts
         """
         self.env = simpy.Environment()
         part_component_types = [
@@ -128,8 +143,14 @@ class TestMultipleParts(unittest.TestCase):
 
 
 class TestMachine(unittest.TestCase):
+    """
+    Tests behaviour of a single machine
+    """
 
     def setUp(self):
+        """
+        Initialises a simulation environment and 2 Parts
+        """
         self.env = simpy.Environment()
         self.part_component_types = [
             ComponentType(self.env, "Part A", MA, CA, LA, CHA, TRA, SA),
