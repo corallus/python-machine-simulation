@@ -3,27 +3,18 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Machine simulations' class reference!
-=====================================
+Machine simulations' documentation!
+===================================
 
 .. toctree::
    :maxdepth: 2
 
-simulation
-
 .. automodule:: machine_simulation.simulation
-   :members:
-
-tests
-
-.. automodule:: machine_simulation.tests.unittests
    :members:
 
 
 Indices and tables
 ==================
 
-* :ref:`genindex`
 * :ref:`modindex`
-* :ref:`search`
 

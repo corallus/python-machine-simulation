@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Machine simulations’ class reference! &mdash; Machine simulation 1.0 documentation</title>
+    <title>Machine simulations’ documentation! &mdash; Machine simulation 1.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -44,13 +44,12 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="machine-simulations-class-reference">
-<h1>Machine simulations&#8217; class reference!<a class="headerlink" href="#machine-simulations-class-reference" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="machine-simulations-documentation">
+<h1>Machine simulations&#8217; documentation!<a class="headerlink" href="#machine-simulations-documentation" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul class="simple">
 </ul>
 </div>
-<p>simulation</p>
 <span class="target" id="module-machine_simulation.simulation"></span><dl class="class">
 <dt id="machine_simulation.simulation.ComponentType">
 <em class="property">class </em><tt class="descclassname">machine_simulation.simulation.</tt><tt class="descname">ComponentType</tt><big>(</big><em>env</em>, <em>name</em>, <em>mean</em>, <em>unit_purchase_costs</em>, <em>delivery_time</em>, <em>unit_holding_costs</em>, <em>time_replacement</em>, <em>safety_stock</em><big>)</big><a class="headerlink" href="#machine_simulation.simulation.ComponentType" title="Permalink to this definition">¶</a></dt>
@@ -173,129 +172,11 @@ downtime costs
 
 </dd></dl>
 
-<p>tests</p>
-<span class="target" id="module-machine_simulation.tests.unittests"></span><dl class="class">
-<dt id="machine_simulation.tests.unittests.TestComponentType">
-<em class="property">class </em><tt class="descclassname">machine_simulation.tests.unittests.</tt><tt class="descname">TestComponentType</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestComponentType" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests whether component_type behaves like S-1 queue and tests the inventory holding costs</p>
-<dl class="method">
-<dt id="machine_simulation.tests.unittests.TestComponentType.setUp">
-<tt class="descname">setUp</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestComponentType.setUp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialises a simulation environment and a ComponentType</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="machine_simulation.tests.unittests.TestComponentType.test_inventory">
-<tt class="descname">test_inventory</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestComponentType.test_inventory" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests whether ComponentType keeps track of correct inventory costs</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="machine_simulation.tests.unittests.TestComponentType.test_multiple_orders">
-<tt class="descname">test_multiple_orders</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestComponentType.test_multiple_orders" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests whether stock is refilled after multiple orders</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="machine_simulation.tests.unittests.TestComponentType.test_single_order">
-<tt class="descname">test_single_order</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestComponentType.test_single_order" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests whether the stock is refilled after a single order</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="machine_simulation.tests.unittests.TestMachine">
-<em class="property">class </em><tt class="descclassname">machine_simulation.tests.unittests.</tt><tt class="descname">TestMachine</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestMachine" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests behaviour of a single machine</p>
-<dl class="method">
-<dt id="machine_simulation.tests.unittests.TestMachine.setUp">
-<tt class="descname">setUp</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestMachine.setUp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialises a simulation environment and 2 Parts</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="machine_simulation.tests.unittests.TestMachine.test_policy_a">
-<tt class="descname">test_policy_a</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestMachine.test_policy_a" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests whether the repair actually repairs the machine with policy A</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="machine_simulation.tests.unittests.TestMachine.test_policy_ab">
-<tt class="descname">test_policy_ab</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestMachine.test_policy_ab" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests whether the repair actually repairs the machine with policy AB</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="machine_simulation.tests.unittests.TestMachine.test_policy_b">
-<tt class="descname">test_policy_b</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestMachine.test_policy_b" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests whether the repair actually repairs the machine with policy B</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="machine_simulation.tests.unittests.TestMachine.test_policy_o">
-<tt class="descname">test_policy_o</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestMachine.test_policy_o" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests whether the repair actually repairs the machine with policy O</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="machine_simulation.tests.unittests.TestMultipleParts">
-<em class="property">class </em><tt class="descclassname">machine_simulation.tests.unittests.</tt><tt class="descname">TestMultipleParts</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestMultipleParts" title="Permalink to this definition">¶</a></dt>
-<dd><p>Test the relation between breakdowns of multiple parts of the same machine</p>
-<dl class="method">
-<dt id="machine_simulation.tests.unittests.TestMultipleParts.setUp">
-<tt class="descname">setUp</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestMultipleParts.setUp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialises a simulation environment and a Machine consisting of 2 parts</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="machine_simulation.tests.unittests.TestMultipleParts.test_not_multiple_broken">
-<tt class="descname">test_not_multiple_broken</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestMultipleParts.test_not_multiple_broken" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests whether multiple parts of a machine can be broken at the same time. Specifically this tests whether some
-part breaks when another part is already broken</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="machine_simulation.tests.unittests.TestSinglePart">
-<em class="property">class </em><tt class="descclassname">machine_simulation.tests.unittests.</tt><tt class="descname">TestSinglePart</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestSinglePart" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests machine with a single part</p>
-<dl class="method">
-<dt id="machine_simulation.tests.unittests.TestSinglePart.setUp">
-<tt class="descname">setUp</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestSinglePart.setUp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialises a simulation environment and a Machine with one Part</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="machine_simulation.tests.unittests.TestSinglePart.test_break_part">
-<tt class="descname">test_break_part</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestSinglePart.test_break_part" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests whether a part breaks after its&#8217; breakdown time</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="machine_simulation.tests.unittests.TestSinglePart.test_inventory_costs">
-<tt class="descname">test_inventory_costs</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestSinglePart.test_inventory_costs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests whether the inventory costs are added to a product component_types&#8217; costs</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="machine_simulation.tests.unittests.TestSinglePart.test_replace">
-<tt class="descname">test_replace</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestSinglePart.test_replace" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests whether the replace actually replaces the part</p>
-</dd></dl>
-
-</dd></dl>
-
 </div>
 <div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
-<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
 <li><a class="reference internal" href="py-modindex.html"><em>Module Index</em></a></li>
-<li><a class="reference internal" href="search.html"><em>Search Page</em></a></li>
 </ul>
 </div>
 
@@ -307,7 +188,7 @@ part breaks when another part is already broken</p>
         <div class="sphinxsidebarwrapper">
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Machine simulations&#8217; class reference!</a></li>
+<li><a class="reference internal" href="#">Machine simulations&#8217; documentation!</a></li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 

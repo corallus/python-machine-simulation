@@ -12,9 +12,6 @@ Machine simulations' documentation!
 .. automodule:: machine_simulation.simulation
    :members:
 
-.. automodule:: machine_simulation.tests.unittests
-   :members:
-
 
 Indices and tables
 ==================
