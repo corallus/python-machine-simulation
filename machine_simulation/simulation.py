@@ -133,6 +133,7 @@ class Machine(object):
         self.parts = [Part(self.env, part_specification, self, self.maintenance_men)
                       for part_specification in self.part_specifications]
         self.process = env.process(self.working())
+        env.process(self.compute_downtime_costs())
         self.start()
 
     def start(self):
@@ -151,10 +152,17 @@ class Machine(object):
             try:
                 yield self.env.timeout(1)
             except simpy.Interrupt:
-                broken_since = self.env.now
                 yield self.env.process(self.repair())
-                self.downtime_costs += (self.env.now - broken_since) * self.costs_per_unit_downtime
                 self.start()
+
+    def compute_downtime_costs(self):
+        """
+        A process which keeps track if inventory holding costs
+        """
+        while True:
+            if self.broken:
+                self.downtime_costs += self.costs_per_unit_downtime
+            yield self.env.timeout(1)
 
     def repair(self):
         raise NotImplementedError
