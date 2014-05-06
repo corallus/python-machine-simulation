@@ -101,19 +101,16 @@ class Part(object):
         """
         A process to replace this part by a new part
         """
-        self.env.process(self.component_type.order())
-        with self.component_type.stock.get(1) as req:
-            yield req
-            with self.maintenance_men.request() as maintainer:
-                yield maintainer
+        with self.maintenance_men.request() as maintainer:
+            yield maintainer
+            with self.component_type.stock.get(1) as req:
+                yield req
+                self.env.process(self.component_type.order())
                 self.purchase_costs += self.component_type.unit_purchase_costs
                 yield self.env.timeout(self.component_type.time_replacement)
 
 
 class Machine(object):
-    """
-
-    """
     downtime_costs = 0
     purchase_costs = 0
 
@@ -166,11 +163,11 @@ class Machine(object):
         """
         A process to replace this machine by a new one
         """
-        with self.component_type.stock.get(1) as req:
-            yield req
-            self.env.process(self.component_type.order())
-            with self.maintenance_men.request() as maintainer:
-                yield maintainer
+        with self.maintenance_men.request() as maintainer:
+            yield maintainer
+            with self.component_type.stock.get(1) as req:
+                yield req
+                self.env.process(self.component_type.order())
                 self.purchase_costs += self.component_type.unit_purchase_costs
             yield self.env.timeout(self.component_type.time_replacement)
 
