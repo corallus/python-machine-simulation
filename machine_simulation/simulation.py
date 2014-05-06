@@ -157,7 +157,7 @@ class Machine(object):
 
     def compute_downtime_costs(self):
         """
-        A process which keeps track if inventory holding costs
+        A process which monitors downtime costs
         """
         while True:
             if self.broken:
