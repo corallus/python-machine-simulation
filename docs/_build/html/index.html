@@ -76,37 +76,6 @@ well. Implementation of a (S-1,S) queue for inventory management</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="machine_simulation.simulation.Machine">
-<em class="property">class </em><tt class="descclassname">machine_simulation.simulation.</tt><tt class="descname">Machine</tt><big>(</big><em>env</em>, <em>name</em>, <em>component_type</em>, <em>part_specifications</em>, <em>costs_per_unit_downtime</em>, <em>maintenance_men</em><big>)</big><a class="headerlink" href="#machine_simulation.simulation.Machine" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
-<dt id="machine_simulation.simulation.Machine.costs">
-<tt class="descname">costs</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.simulation.Machine.costs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Keeps track of the total costs of this machine, consisting of purchase costs of parts and modules as well as
-downtime costs
-:return: Int</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="machine_simulation.simulation.Machine.replace">
-<tt class="descname">replace</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.simulation.Machine.replace" title="Permalink to this definition">¶</a></dt>
-<dd><p>A process to replace this machine by a new one</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="machine_simulation.simulation.Machine.start">
-<tt class="descname">start</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.simulation.Machine.start" title="Permalink to this definition">¶</a></dt>
-<dd><p>Starts the machine</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="machine_simulation.simulation.Machine.working">
-<tt class="descname">working</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.simulation.Machine.working" title="Permalink to this definition">¶</a></dt>
-<dd><p>Main machine production process</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
 <dt id="machine_simulation.simulation.Part">
 <em class="property">class </em><tt class="descclassname">machine_simulation.simulation.</tt><tt class="descname">Part</tt><big>(</big><em>env</em>, <em>component_type</em>, <em>machine</em>, <em>maintenance_men</em><big>)</big><a class="headerlink" href="#machine_simulation.simulation.Part" title="Permalink to this definition">¶</a></dt>
 <dd><p>An &#8220;instance&#8221; of a ComponentType. Belongs to a machine.</p>
