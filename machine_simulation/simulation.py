@@ -14,7 +14,7 @@ class ComponentType(object):
     inventory_holding_costs = 0
 
     def __init__(self, env, name, mean, unit_purchase_costs, delivery_time, unit_holding_costs, time_replacement,
-                 safety_stock):
+                 order_up_to):
         """
         Starts the inventory tracking process
         :param env: simulation environment
@@ -24,7 +24,7 @@ class ComponentType(object):
         :param delivery_time: time between order and delivery
         :param unit_holding_costs: costs for holding one unit of stock for 1 time unit
         :param time_replacement: time to replace
-        :param safety_stock: level of stock to order up to
+        :param order_up_to: level of stock to order up to
         """
         self.env = env
         self.name = name
@@ -33,8 +33,8 @@ class ComponentType(object):
         self.delivery_time = delivery_time
         self.unit_holding_costs = unit_holding_costs
         self.time_replacement = time_replacement
-        self.stock = simpy.Container(env, init=safety_stock)
-        self.safety_stock = safety_stock
+        self.stock = simpy.Container(env, init=order_up_to)
+        self.order_up_to = order_up_to
         self.env.process(self.inventory())
 
     def order(self):

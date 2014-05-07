@@ -26,9 +26,9 @@ class TestComponentType(unittest.TestCase):
         stock = self.component_type.stock
         stock.get(1)
         self.env.process(self.component_type.order())
-        self.assertEqual(stock.level, self.component_type.safety_stock-1)
+        self.assertEqual(stock.level, self.component_type.order_up_to-1)
         self.env.run(until=self.component_type.delivery_time+1)
-        self.assertEqual(stock.level, self.component_type.safety_stock)
+        self.assertEqual(stock.level, self.component_type.order_up_to)
 
     def test_multiple_orders(self):
         """
@@ -41,9 +41,9 @@ class TestComponentType(unittest.TestCase):
         self.env.process(self.component_type.order())
         stock.get(1)
         self.env.process(self.component_type.order())
-        self.assertEqual(stock.level, max(0, self.component_type.safety_stock-3))
+        self.assertEqual(stock.level, max(0, self.component_type.order_up_to-3))
         self.env.run(until=self.component_type.delivery_time + 1)
-        self.assertEqual(stock.level, self.component_type.safety_stock)
+        self.assertEqual(stock.level, self.component_type.order_up_to)
 
     def test_inventory(self):
         """
@@ -56,8 +56,8 @@ class TestComponentType(unittest.TestCase):
         self.env.run(until=self.component_type.delivery_time + 1)
         self.assertEqual(self.component_type.inventory_holding_costs,
                          self.component_type.delivery_time * (
-                             self.component_type.inventory_holding_costs * (self.component_type.safety_stock - 1)
-                         ) + self.component_type.safety_stock * self.component_type.inventory_holding_costs)
+                             self.component_type.inventory_holding_costs * (self.component_type.order_up_to - 1)
+                         ) + self.component_type.order_up_to * self.component_type.inventory_holding_costs)
 
 
 class TestSinglePart(unittest.TestCase):

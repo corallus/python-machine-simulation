@@ -29,7 +29,7 @@ class IntegrationTest(unittest.TestCase):
             self.assertEqual(component_type.purchase_costs, 0)
 
         self.assertEqual(self.machine_component_type.inventory_holding_costs,
-                         self.machine_component_type.safety_stock * self.machine_component_type.unit_holding_costs * time)
+                         self.machine_component_type.order_up_to * self.machine_component_type.unit_holding_costs * time)
         for component_type in self.part_component_types:
             self.assertEqual(component_type.inventory_holding_costs,
-                             component_type.safety_stock * component_type.unit_holding_costs * time)
+                             component_type.order_up_to * component_type.unit_holding_costs * time)
