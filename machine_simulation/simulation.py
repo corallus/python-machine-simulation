@@ -5,53 +5,80 @@ import random
 import sys
 
 
-class ComponentType(object):
+class ComponentStock(simpy.Container):
     """
-    The specification of a part/module. This class is used for keeping track of inventory of this kind of component as
-    well. Implementation of a (S-1,S) queue for inventory management
+    Implementation of a (S-1,S) inventory management system
     """
     purchase_costs = 0
     inventory_holding_costs = 0
 
-    def __init__(self, env, name, mean, unit_purchase_costs, delivery_time, unit_holding_costs, time_replacement,
-                 order_up_to):
+    def __init__(self, env, unit_purchase_costs, delivery_time, unit_holding_costs, capacity=float('inf')):
         """
-        Starts the inventory tracking process
-        :param env: simulation environment
-        :param name: name
-        :param mean: 1/failure rate
+        :param env:
         :param unit_purchase_costs: costs for purchasing one
         :param delivery_time: time between order and delivery
         :param unit_holding_costs: costs for holding one unit of stock for 1 time unit
-        :param time_replacement: time to replace
-        :param order_up_to: level of stock to order up to
+        :param capacity:
         """
+        super(ComponentStock, self).__init__(env, capacity=capacity, init=capacity)
         self.env = env
-        self.name = name
-        self.mean = mean
         self.unit_purchase_costs = unit_purchase_costs
         self.delivery_time = delivery_time
         self.unit_holding_costs = unit_holding_costs
-        self.time_replacement = time_replacement
-        self.stock = simpy.Container(env, init=order_up_to)
-        self.order_up_to = order_up_to
         self.env.process(self.inventory())
+
+    def _do_get(self, event):
+        super(ComponentStock, self)._do_get(event)
+        self.env.process(self.order())
 
     def order(self):
         """
         A process to order an item
         """
         yield self.env.timeout(self.delivery_time)
-        yield self.stock.put(1)
         self.purchase_costs += self.unit_purchase_costs
+        yield self.put(1)
 
     def inventory(self):
         """
         A process which keeps track if inventory holding costs
         """
         while True:
-            self.inventory_holding_costs += self.stock.level * self.unit_holding_costs
+            self.inventory_holding_costs += self.level * self.unit_holding_costs
             yield self.env.timeout(1)
+
+
+class Component(object):
+    """
+    The specification of a part/module.
+    """
+
+    def __init__(self, env, name, time_replacement, stock):
+        """
+        Starts the inventory tracking process
+        :param time_replacement:
+        :param stock:
+        :param name: name
+        """
+        self.env = env
+        self.name = name
+        self.time_replacement = time_replacement
+        self.stock = stock
+
+    def replace(self):
+        with self.stock.get(1) as req:
+            yield req
+            yield self.env.timeout(self.time_replacement)
+
+
+class BreakableComponent(Component):
+    """
+    A component that breaks down every once in a while
+    """
+
+    def __init__(self, env, name, time_replacement, stock, mean):
+        super(BreakableComponent, self).__init__(env, name, time_replacement, stock)
+        self.mean = mean
 
     def time_to_failure(self):
         """
@@ -63,188 +90,148 @@ class ComponentType(object):
             return sys.maxint
 
 
-class Part(object):
+class Module(Component):
     """
-    An "instance" of a ComponentType. Belongs to a machine.
+    A container for multiple breakable components
     """
-    purchase_costs = 0
+    def __init__(self, env, name, time_replacement, stock,
+                 breakable_components):
+        super(Module, self).__init__(env, name, time_replacement, stock)
+        self.breakable_components = breakable_components
 
-    def __init__(self, env, component_type, machine, maintenance_men):
-        """
-        :param env: simulation environment
-        :param component_type: ComponentType
-        :param machine: Machine
-        :param maintenance_men: Resource
-        """
-        self.component_type = component_type
-        self.machine = machine
-        self.maintenance_men = maintenance_men
-        self.broken = False
-        self.env = env
-
-    def break_part(self):
-        """
-        A one time process breaking a part after a while
-        """
-        self.broken = False
-        while not self.broken and not self.machine.broken:
-            yield self.env.timeout(self.component_type.time_to_failure())
-            if not self.broken and not self.machine.broken:
-                # parts can not breakdown during repair
-                self.broken = True
-                # print('%s breaks @ %f' % (self.component_type.name, self.env.now))
-                self.machine.broken = True
-                # machine not functioning during replacement
-                self.machine.process.interrupt()
-
-    def replace(self):
-        """
-        A process to replace this part by a new part
-        """
-        with self.maintenance_men.request() as maintainer:
-            yield maintainer
-            with self.component_type.stock.get(1) as req:
-                yield req
-                self.env.process(self.component_type.order())
-                self.purchase_costs += self.component_type.unit_purchase_costs
-                yield self.env.timeout(self.component_type.time_replacement)
+    def break_module(self, machine):
+        broken_component, time = min([(component, component.time_to_failure())
+                                      for component in self.breakable_components], key=lambda result: result[1])
+        yield self.env.timeout(time)
+        self.env.process(machine.repair(broken_component))
 
 
 class Machine(object):
     downtime_costs = 0
-    purchase_costs = 0
+    down = False
 
-    def __init__(self, env, name, component_type, part_specifications, costs_per_unit_downtime, maintenance_men):
+    def __init__(self, env, name, module, costs_per_unit_downtime, factory):
         """
         Starts the inventory tracking process for the module and generates parts according to there component types
+        :param module:
         :param env: simulation environment
         :param name: name
-        :param component_type: ComponentType
-        :param part_specifications: list of ComponentTypes
         :param costs_per_unit_downtime: Int
-        :param maintenance_men: simpy.Resource
         """
+        self.factory = factory
         self.env = env
         self.name = name
-        self.component_type = component_type
-        self.part_specifications = part_specifications
+        self.module = module
         self.costs_per_unit_downtime = costs_per_unit_downtime
-        self.maintenance_men = maintenance_men
-        self.parts = [Part(self.env, part_specification, self, self.maintenance_men)
-                      for part_specification in self.part_specifications]
-        self.process = env.process(self.working())
-        env.process(self.compute_downtime_costs())
-        self.start()
-
-    def start(self):
-        """
-        Starts the machine
-        """
         self.broken = False
-        for part in self.parts:
-            self.env.process(part.break_part())
+        self.run()
+        self.env.process(self.process_downtime_costs())
 
-    def working(self):
+    def run(self):
         """
         Main machine production process
         """
-        while True:
-            try:
-                yield self.env.timeout(1)
-            except simpy.Interrupt:
-                yield self.env.process(self.repair())
-                self.start()
+        self.env.process(self.module.break_module(self))
 
-    def compute_downtime_costs(self):
-        """
-        A process which monitors downtime costs
-        """
-        while True:
-            if self.broken:
-                self.downtime_costs += self.costs_per_unit_downtime
-            yield self.env.timeout(1)
-
-    def repair(self):
+    def repair(self, broken_component):
         raise NotImplementedError
 
-    def replace(self):
+    def process_downtime_costs(self):
+        self.downtime_costs += self.costs_per_unit_downtime
+        yield self.env.timeout(1)
+
+
+class Factory(object):
+    maintenance_men_salary = 0
+    operators_salary = 0
+
+    def __init__(self, env, number_maintenance_men, module, costs_per_unit_downtime,
+                 number_of_machines, operator_salary, maintenance_man_salary, policy_class):
         """
-        A process to replace this machine by a new one
+
+        :param module:
+        :param costs_per_unit_downtime:
+        :param env:
+        :param number_maintenance_men: int
+        :param number_of_machines: int
+        :param operator_salary: int
         """
-        with self.maintenance_men.request() as maintainer:
-            yield maintainer
-            with self.component_type.stock.get(1) as req:
-                yield req
-                self.env.process(self.component_type.order())
-                self.purchase_costs += self.component_type.unit_purchase_costs
-            yield self.env.timeout(self.component_type.time_replacement)
+        self.env = env
+        self.maintenance_men = simpy.Resource(self.env, number_maintenance_men)
+        self.machines = [policy_class(env, "Machine %d" % i, module, costs_per_unit_downtime, self)
+                         for i in range(number_of_machines)]
+        self.operator_salary = operator_salary
+        self.maintenance_man_salary = maintenance_man_salary
+        self.module = module
+        env.process(self.track_salary())
 
     def costs(self):
+        costs = self.module.stock.purchase_costs + self.module.stock.inventory_holding_costs
+        costs += sum([machine.downtime_costs for machine in self.machines])
+        costs += sum([component.stock.purchase_costs+component.stock.inventory_holding_costs
+                      for component in self.module.breakable_components])
+        costs += self.operators_salary + self.maintenance_men_salary
+        return costs
+
+    def track_salary(self):
         """
-        Keeps track of the total costs of this machine, consisting of purchase costs of parts and modules as well as
-        downtime costs
-        :return: Int
+        A process which keeps track if inventory holding costs
         """
-        total_costs = 0
-        for part in self.parts:
-            total_costs += part.purchase_costs
-        total_costs += self.component_type.unit_purchase_costs + self.downtime_costs
-        return total_costs
+        while True:
+            self.maintenance_men_salary += self.maintenance_man_salary * self.maintenance_men.capacity
+            self.operators_salary += self.operator_salary * len(self.machines)
+            yield self.env.timeout(1)
 
 
 class PolicyO(Machine):
     """
     Implementation of the repair method of a machine
     """
-    def repair(self):
+    def repair(self, broken_component):
         """
         Always replace parts individually
         """
-        for part in self.parts:
-            if part.broken:
-                yield self.env.process(part.replace())
+        yield self.env.process(broken_component.replace())
+        self.run()
 
 
 class PolicyA(Machine):
     """
     Implementation of the repair method of a machine
     """
-    def repair(self):
+    def repair(self, broken_component):
         """
         Replace module if part A broken, else replace part
         """
-        for part in self.parts:
-            if part.broken:
-                broken_part = part
-                if broken_part.component_type.name == "Part A":
-                    yield self.env.process(self.replace())
-                else:
-                    yield self.env.process(part.replace())
+        if broken_component.name == "Part A":
+            yield self.env.process(self.module.replace())
+        else:
+            yield self.env.process(broken_component.replace())
+        self.run()
 
 
 class PolicyB(Machine):
     """
     Implementation of the repair method of a machine
     """
-    def repair(self):
+    def repair(self, broken_component):
         """
         Replace module if part B broken, else replace part
         """
-        for part in self.parts:
-            if part.broken:
-                broken_part = part
-                if broken_part.component_type.name == "Part B":
-                    yield self.env.process(self.replace())
-                else:
-                    yield self.env.process(part.replace())
+        if broken_component.name == "Part B":
+            yield self.env.process(self.module.replace())
+        else:
+            yield self.env.process(broken_component.replace())
+        self.run()
 
 
 class PolicyAB(Machine):
     """
     Implementation of the repair method of a machine
     """
-    def repair(self):
+    def repair(self, broken_component):
         """
         Always replace module
         """
-        yield self.env.process(self.replace())
+        yield self.env.process(self.module.replace())
+        self.run()

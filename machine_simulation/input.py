@@ -17,6 +17,7 @@ SIMULATION_TIME = 1825  # time simulation has to run
 
 #situation2
 NUMBER_MAINTENANCE_MEN = 3  # number of maintenance men
+M_SALARY = 2
 
 #situation 3
 
