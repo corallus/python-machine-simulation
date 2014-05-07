@@ -7,7 +7,7 @@ from machine_simulation.input import *
 
 class IntegrationTest(unittest.TestCase):
     """
-
+    Test boundary cases
     """
 
     def setUp(self):
