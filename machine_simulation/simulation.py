@@ -11,6 +11,7 @@ class ComponentStock(simpy.Container):
     """
     purchase_costs = 0
     inventory_holding_costs = 0
+    in_order = 0
 
     def __init__(self, env, unit_purchase_costs, delivery_time, unit_holding_costs, capacity=float('inf')):
         """
@@ -27,15 +28,18 @@ class ComponentStock(simpy.Container):
         self.unit_holding_costs = unit_holding_costs
         self.env.process(self.inventory())
 
-    def _do_get(self, event):
-        super(ComponentStock, self)._do_get(event)
-        self.env.process(self.order())
+    def get(self, amount):
+        if self.level - 1 + self.in_order < self.capacity:
+            self.env.process(self.order())
+        return super(ComponentStock, self).get(amount)
 
     def order(self):
         """
         A process to order an item
         """
+        self.in_order += 1
         yield self.env.timeout(self.delivery_time)
+        self.in_order -= 1
         self.purchase_costs += self.unit_purchase_costs
         yield self.put(1)
 
@@ -94,16 +98,16 @@ class Module(Component):
     """
     A container for multiple breakable components
     """
-    def __init__(self, env, name, time_replacement, stock,
-                 breakable_components):
+    def __init__(self, env, name, time_replacement, stock, breakable_components):
         super(Module, self).__init__(env, name, time_replacement, stock)
         self.breakable_components = breakable_components
 
     def break_module(self, machine):
-        broken_component, time = min([(component, component.time_to_failure())
-                                      for component in self.breakable_components], key=lambda result: result[1])
-        yield self.env.timeout(time)
-        self.env.process(machine.repair(broken_component))
+        if len(self.breakable_components) > 0:
+            broken_component, time = min([(component, component.time_to_failure())
+                                          for component in self.breakable_components], key=lambda result: result[1])
+            yield self.env.timeout(time)
+            self.env.process(machine.repair(broken_component))
 
 
 class Machine(object):
@@ -191,8 +195,10 @@ class PolicyO(Machine):
         """
         Always replace parts individually
         """
-        yield self.env.process(broken_component.replace())
-        self.run()
+        with self.factory.maintenance_men.request() as req:
+            yield req
+            yield self.env.process(broken_component.replace())
+            self.run()
 
 
 class PolicyA(Machine):
@@ -203,11 +209,13 @@ class PolicyA(Machine):
         """
         Replace module if part A broken, else replace part
         """
-        if broken_component.name == "Part A":
-            yield self.env.process(self.module.replace())
-        else:
-            yield self.env.process(broken_component.replace())
-        self.run()
+        with self.factory.maintenance_men.request() as req:
+            yield req
+            if broken_component.name == "Part A":
+                yield self.env.process(self.module.replace())
+            else:
+                yield self.env.process(broken_component.replace())
+            self.run()
 
 
 class PolicyB(Machine):
@@ -218,11 +226,13 @@ class PolicyB(Machine):
         """
         Replace module if part B broken, else replace part
         """
-        if broken_component.name == "Part B":
-            yield self.env.process(self.module.replace())
-        else:
-            yield self.env.process(broken_component.replace())
-        self.run()
+        with self.factory.maintenance_men.request() as req:
+            yield req
+            if broken_component.name == "Part B":
+                yield self.env.process(self.module.replace())
+            else:
+                yield self.env.process(broken_component.replace())
+            self.run()
 
 
 class PolicyAB(Machine):
@@ -233,5 +243,7 @@ class PolicyAB(Machine):
         """
         Always replace module
         """
-        yield self.env.process(self.module.replace())
-        self.run()
+        with self.factory.maintenance_men.request() as req:
+            yield req
+            yield self.env.process(self.module.replace())
+            self.run()
