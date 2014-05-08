@@ -3,7 +3,7 @@ __author__ = 'Vincent van Bergen'
 import unittest
 
 from machine_simulation.simulation import *
-from testsimulation import TestBreakableComponent as BreakableComponent
+from testsimulation import TestBreakableComponent
 from machine_simulation.input import *
 
 
@@ -59,16 +59,74 @@ class TestModule(unittest.TestCase):
 
     def test_break_module(self):
         breakable_components = [
-            BreakableComponent(self.env, "Part A", TRA, ComponentStock(self.env, CA, LA, CHA, SA), 4),
-            BreakableComponent(self.env, "Part B", TRB, ComponentStock(self.env, CB, LB, CHB, SB), 5),
+            TestBreakableComponent(self.env, "Part A", TRA, ComponentStock(self.env, CA, LA, CHA, SA), 4, False),
+            TestBreakableComponent(self.env, "Part B", TRB, ComponentStock(self.env, CB, LB, CHB, SB), 5, False),
         ]
 
-        module = Module(self.env, "Module", TRAB, ComponentStock(self.env, CAB, LAB, CHAB, SAB), breakable_components)
+        module = Module(self.env, TRAB, ComponentStock(self.env, CAB, LAB, CHAB, SAB), breakable_components)
 
-        factory = Factory(self.env, NUMBER_MAINTENANCE_MEN, module, CD, 1, 10, 6, Machine)
+        factory = Factory(self.env, NUMBER_MAINTENANCE_MEN, module, CD, 1, 10, 6)
 
         broken_component, time = min([(component, component.time_to_failure())
                                       for component in module.breakable_components], key=lambda result: result[1])
 
         self.assertEqual(broken_component, breakable_components[0])
         self.assertEqual(time, 4)
+
+
+class TestMachine(unittest.TestCase):
+
+    def setUp(self):
+        self.env = simpy.Environment()
+
+    def test_policy_o(self):
+        breakable_components = [
+            BreakableComponent(self.env, "Part A", TRA, ComponentStock(self.env, CA, LA, CHA, SA), 5, False),
+            BreakableComponent(self.env, "Part B", TRB, ComponentStock(self.env, CB, LB, CHB, SB), 5, False),
+        ]
+        module = Module(self.env, TRAB, ComponentStock(self.env, CAB, LAB, CHAB, SAB), breakable_components)
+        Factory(self.env, NUMBER_MAINTENANCE_MEN, module, CD, 1, MAINTENANCE_MAN_SALARY, OPERATOR_SALARY)
+        time = 1000
+        self.env.run(until=time)
+        self.assertEqual(module.stock.purchase_costs, 0)
+        for component in module.breakable_components:
+            self.assertNotEqual(component.stock.purchase_costs, 0)
+
+    def test_policy_a(self):
+        breakable_components = [
+            BreakableComponent(self.env, "Part A", TRA, ComponentStock(self.env, CA, LA, CHA, SA), 5, True),
+            BreakableComponent(self.env, "Part B", TRB, ComponentStock(self.env, CB, LB, CHB, SB), 5, False),
+        ]
+        module = Module(self.env, TRAB, ComponentStock(self.env, CAB, LAB, CHAB, SAB), breakable_components)
+        Factory(self.env, NUMBER_MAINTENANCE_MEN, module, CD, 1, MAINTENANCE_MAN_SALARY, OPERATOR_SALARY)
+        time = 1000
+        self.env.run(until=time)
+        self.assertNotEqual(module.stock.purchase_costs, 0)
+        self.assertNotEqual(module.breakable_components[1].stock.purchase_costs, 0)
+        self.assertEqual(module.breakable_components[0].stock.purchase_costs, 0)
+
+    def test_policy_b(self):
+        breakable_components = [
+            BreakableComponent(self.env, "Part A", TRA, ComponentStock(self.env, CA, LA, CHA, SA), 5, False),
+            BreakableComponent(self.env, "Part B", TRB, ComponentStock(self.env, CB, LB, CHB, SB), 5, True),
+        ]
+        module = Module(self.env, TRAB, ComponentStock(self.env, CAB, LAB, CHAB, SAB), breakable_components)
+        Factory(self.env, NUMBER_MAINTENANCE_MEN, module, CD, 1, MAINTENANCE_MAN_SALARY, OPERATOR_SALARY)
+        time = 1000
+        self.env.run(until=time)
+        self.assertNotEqual(module.stock.purchase_costs, 0)
+        self.assertNotEqual(module.breakable_components[0].stock.purchase_costs, 0)
+        self.assertEqual(module.breakable_components[1].stock.purchase_costs, 0)
+
+    def test_policy_c(self):
+        breakable_components = [
+            BreakableComponent(self.env, "Part A", TRA, ComponentStock(self.env, CA, LA, CHA, SA), 5, True),
+            BreakableComponent(self.env, "Part B", TRB, ComponentStock(self.env, CB, LB, CHB, SB), 5, True),
+        ]
+        module = Module(self.env, TRAB, ComponentStock(self.env, CAB, LAB, CHAB, SAB), breakable_components)
+        Factory(self.env, NUMBER_MAINTENANCE_MEN, module, CD, 1, MAINTENANCE_MAN_SALARY, OPERATOR_SALARY)
+        time = 1000
+        self.env.run(until=time)
+        self.assertNotEqual(module.stock.purchase_costs, 0)
+        self.assertEqual(module.breakable_components[0].stock.purchase_costs, 0)
+        self.assertEqual(module.breakable_components[1].stock.purchase_costs, 0)
