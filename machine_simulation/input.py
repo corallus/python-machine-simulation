@@ -14,14 +14,13 @@ TRB = 3  # time required for replacing 1 part B by an operator
 TRAB = 2  # time required for replacing 1 part AB by an operator
 NUMBER_MACHINES = 15  # number of machines
 SIMULATION_TIME = 1825  # time simulation has to run
+OPERATOR_SALARY = 10
 
 #situation2
 NUMBER_MAINTENANCE_MEN = 3  # number of maintenance men
-M_SALARY = 2
+MAINTENANCE_MAN_SALARY = 5
 
 #situation 3
-
-#situation4
 LA = 1  # non-zero delivery time part A
 LB = 2  # non-zero delivery time part B
 LAB = 1  # non-zero delivery time part AB

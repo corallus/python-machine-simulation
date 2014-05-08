@@ -4,9 +4,6 @@ import unittest
 from machine_simulation.simulation import *
 from machine_simulation.input import *
 
-OPERATOR_SALARY = 10
-MAINTENANCE_MAN_SALARY = 5
-
 
 class IntegrationTest(unittest.TestCase):
     """
