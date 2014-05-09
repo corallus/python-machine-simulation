@@ -1,8 +1,8 @@
 __author__ = 'Vincent van Bergen'
 
 import simpy
-import random
 import sys
+import random
 
 
 class ComponentStock(simpy.Container):

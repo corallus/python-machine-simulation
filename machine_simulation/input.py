@@ -1,7 +1,5 @@
 __author__ = 'vincent'
 
-# RANDOM_SEED = 42
-
 # parameters
 MA = 5   # mean of machine A
 MB = 4   # mean of machine B
