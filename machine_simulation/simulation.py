@@ -96,6 +96,8 @@ class BreakableComponent(Component):
         :param mean: the mean time to failure
         :param replace_module: whether to replace parent module when its broken
         """
+        if replace_module:
+            stock.unit_inventory_holding_costs = 0
         super(BreakableComponent, self).__init__(env, time_replacement, stock)
         self.name = name
         self.mean = mean
@@ -216,7 +218,6 @@ class Factory(object):
         self.operator_salary = operator_salary
         self.maintenance_man_salary = maintenance_man_salary
         self.module = module
-
 
     def costs(self):
         """
