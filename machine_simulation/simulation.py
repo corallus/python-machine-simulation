@@ -212,7 +212,7 @@ class Factory(object):
         self.env = env
         if number_maintenance_men:
             self.maintenance_men = simpy.Resource(self.env, number_maintenance_men)
-            env.process(self.track_salary())
+        env.process(self.track_salary())
         self.machines = [Machine(env, module, costs_per_unit_downtime, self)
                          for i in range(number_of_machines)]
         self.operator_salary = operator_salary
@@ -236,6 +236,7 @@ class Factory(object):
         A process which keeps track salary costs
         """
         while True:
-            self.maintenance_men_salary += self.maintenance_man_salary * self.maintenance_men.capacity
+            if self.maintenance_men:
+                self.maintenance_men_salary += self.maintenance_man_salary * self.maintenance_men.capacity
             self.operators_salary += self.operator_salary * len(self.machines)
             yield self.env.timeout(1)
