@@ -181,7 +181,7 @@ html_show_sourcelink = False
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'Machinesimulationdoc'
+htmlhelp_basename = 'ReplaceModuleOrPartdoc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -201,7 +201,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  ('index', 'Machinesimulation.tex', u'Machine simulation Documentation',
+  ('index', 'ReplaceModuleOrPart.tex', u'Replace module or parts\' Documentation',
    u'Vincent van Bergen', 'manual'),
 ]
 
@@ -231,7 +231,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'machinesimulation', u'Machine simulation Documentation',
+    ('index', 'machinesimulation', u'Replace module or parts\' Documentation',
      [u'Vincent van Bergen'], 1)
 ]
 
@@ -245,8 +245,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'Machinesimulation', u'Machine simulation Documentation',
-   u'Vincent van Bergen', 'Machinesimulation', 'Simulation of break down costs of multiple machines.',
+  ('index', 'ReplaceModuleOrPart', u'Replace module or parts\' Documentation',
+   u'Vincent van Bergen', 'ReplaceModuleOrPart', 'Simulation of break down costs of multiple machines.',
    'Miscellaneous'),
 ]
 

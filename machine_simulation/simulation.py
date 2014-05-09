@@ -15,7 +15,7 @@ class ComponentStock(simpy.Container):
 
     def __init__(self, env, unit_purchase_costs, delivery_time, unit_holding_costs, capacity=float('inf')):
         """
-        :param env:
+        :param env: simulation environment
         :param unit_purchase_costs: costs for purchasing one
         :param delivery_time: time between order and delivery
         :param unit_holding_costs: costs for holding one unit of stock for 1 time unit
@@ -29,19 +29,24 @@ class ComponentStock(simpy.Container):
         self.env.process(self.inventory())
 
     def get(self, amount):
-        if self.level - 1 + self.in_order < self.capacity:
-            self.env.process(self.order())
+        """
+        :param amount: the amount of stock requested
+        :return: returns a ContainerGet event
+        """
+        if self.level - amount + self.in_order < self.capacity:
+            self.env.process(self.order(amount))
         return super(ComponentStock, self).get(amount)
 
-    def order(self):
+    def order(self, amount):
         """
-        A process to order an item
+        A process to order an amount of items
+        :param amount: the number of items to order
         """
-        self.in_order += 1
+        self.in_order += amount
         yield self.env.timeout(self.delivery_time)
-        self.in_order -= 1
+        self.in_order -= amount
         self.purchase_costs += self.unit_purchase_costs
-        yield self.put(1)
+        yield self.put(amount)
 
     def inventory(self):
         """
@@ -60,14 +65,18 @@ class Component(object):
     def __init__(self, env, time_replacement, stock):
         """
         Starts the inventory tracking process
-        :param time_replacement:
-        :param stock:
+        :param env: simulation environment
+        :param time_replacement: time required to replace itself
+        :param stock: the stock of this item
         """
         self.env = env
         self.time_replacement = time_replacement
         self.stock = stock
 
     def replace(self):
+        """
+        A process which replaces this component by a new one
+        """
         with self.stock.get(1) as req:
             yield req
             yield self.env.timeout(self.time_replacement)
@@ -79,6 +88,14 @@ class BreakableComponent(Component):
     """
 
     def __init__(self, env, name, time_replacement, stock, mean, replace_module):
+        """
+        :param env: simulation environment
+        :param name: string
+        :param time_replacement: time required to replace itself
+        :param stock: the stock of this item
+        :param mean: the mean time to failure
+        :param replace_module: whether to replace parent module when its broken
+        """
         super(BreakableComponent, self).__init__(env, time_replacement, stock)
         self.name = name
         self.mean = mean
@@ -87,6 +104,7 @@ class BreakableComponent(Component):
     def time_to_failure(self):
         """
         Returns the time until next failure if this component, using the mean time to failure of this component.
+        :return: float
         """
         try:
             return random.expovariate(1.0/self.mean)
@@ -98,11 +116,22 @@ class Module(Component):
     """
     A container for multiple breakable components
     """
+
     def __init__(self, env, time_replacement, stock, breakable_components):
+        """
+        :param env: simulation environment
+        :param time_replacement: time required to replace itself
+        :param stock: the stock of this item
+        :param breakable_components: list of BreakableComponent
+        """
         super(Module, self).__init__(env, time_replacement, stock)
         self.breakable_components = breakable_components
 
     def break_module(self, machine):
+        """
+        Waits till first part gets broken and tells this to the machine
+        :param machine: the machine which should be broken when this breaks
+        """
         if len(self.breakable_components) > 0:
             broken_component, time = min([(component, component.time_to_failure())
                                           for component in self.breakable_components], key=lambda result: result[1])
@@ -111,15 +140,18 @@ class Module(Component):
 
 
 class Machine(object):
+    """
+    A machine
+    """
     downtime_costs = 0
-    down = False
 
     def __init__(self, env, module, costs_per_unit_downtime, factory):
         """
         Starts the inventory tracking process for the module and generates parts according to there component types
-        :param module:
+        :param factory: Factory the machine belongs to
+        :param module: Module inside the machine
         :param env: simulation environment
-        :param costs_per_unit_downtime: Int
+        :param costs_per_unit_downtime: integer
         """
         self.factory = factory
         self.env = env
@@ -131,12 +163,13 @@ class Machine(object):
 
     def run(self):
         """
-        Main machine production process
+        Break machine every once in while
         """
         self.env.process(self.module.break_module(self))
 
     def repair(self, broken_component):
         """
+        Will repair machine by either replacing the module or the broken part
         """
         with self.factory.maintenance_men.request() as req:
             yield req
@@ -147,24 +180,30 @@ class Machine(object):
             self.run()
 
     def process_downtime_costs(self):
+        """
+        Keeps track of downtime costs of machine
+        """
         self.downtime_costs += self.costs_per_unit_downtime
         yield self.env.timeout(1)
 
 
 class Factory(object):
+    """
+    Factory consisting of multiple Machines, operators and maintenance men
+    """
     maintenance_men_salary = 0
     operators_salary = 0
 
     def __init__(self, env, number_maintenance_men, module, costs_per_unit_downtime,
                  number_of_machines, operator_salary, maintenance_man_salary):
         """
-
-        :param module:
-        :param costs_per_unit_downtime:
-        :param env:
-        :param number_maintenance_men: int
-        :param number_of_machines: int
-        :param operator_salary: int
+        :param maintenance_man_salary: integer
+        :param module: Module of which Machines consist
+        :param costs_per_unit_downtime: downtime costs for machines
+        :param env: simulation environment
+        :param number_maintenance_men: integer
+        :param number_of_machines: integer
+        :param operator_salary: integer
         """
         self.env = env
         self.maintenance_men = simpy.Resource(self.env, number_maintenance_men)
@@ -176,6 +215,10 @@ class Factory(object):
         env.process(self.track_salary())
 
     def costs(self):
+        """
+        Calculates total costs for this factory
+        :return:
+        """
         costs = self.module.stock.purchase_costs + self.module.stock.inventory_holding_costs
         costs += sum([machine.downtime_costs for machine in self.machines])
         costs += sum([component.stock.purchase_costs+component.stock.inventory_holding_costs
@@ -185,7 +228,7 @@ class Factory(object):
 
     def track_salary(self):
         """
-        A process which keeps track if inventory holding costs
+        A process which keeps track salary costs
         """
         while True:
             self.maintenance_men_salary += self.maintenance_man_salary * self.maintenance_men.capacity
