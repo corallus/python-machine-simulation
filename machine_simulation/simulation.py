@@ -171,13 +171,14 @@ class Machine(object):
         """
         Will repair machine by either replacing the module or the broken part
         """
-        with self.factory.maintenance_men.request() as req:
-            yield req
-            if broken_component.replace_module:
-                yield self.env.process(self.module.replace())
-            else:
-                yield self.env.process(broken_component.replace())
-            self.run()
+        if self.factory.maintenance_men:
+            with self.factory.maintenance_men.request() as req:
+                yield req
+        if broken_component.replace_module:
+            yield self.env.process(self.module.replace())
+        else:
+            yield self.env.process(broken_component.replace())
+        self.run()
 
     def process_downtime_costs(self):
         """
@@ -193,6 +194,7 @@ class Factory(object):
     """
     maintenance_men_salary = 0
     operators_salary = 0
+    maintenance_men = False
 
     def __init__(self, env, number_maintenance_men, module, costs_per_unit_downtime,
                  number_of_machines, operator_salary, maintenance_man_salary):
@@ -206,13 +208,15 @@ class Factory(object):
         :param operator_salary: integer
         """
         self.env = env
-        self.maintenance_men = simpy.Resource(self.env, number_maintenance_men)
+        if number_maintenance_men:
+            self.maintenance_men = simpy.Resource(self.env, number_maintenance_men)
         self.machines = [Machine(env, module, costs_per_unit_downtime, self)
                          for i in range(number_of_machines)]
         self.operator_salary = operator_salary
         self.maintenance_man_salary = maintenance_man_salary
         self.module = module
-        env.process(self.track_salary())
+        if self.maintenance_men:
+            env.process(self.track_salary())
 
     def costs(self):
         """

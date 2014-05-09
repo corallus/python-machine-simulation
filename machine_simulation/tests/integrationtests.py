@@ -25,20 +25,12 @@ class IntegrationTest(unittest.TestCase):
 
     def test_zero_maintenance_men(self):
         """
-        Succeeds if a Factory with 0 maintenance men will have only inventory holding costs
+        Tests whether operators take care of replacement when number of maintenance men set to 0
         """
-        Factory(self.env, 0, self.module, CD, 1, MAINTENANCE_MAN_SALARY, OPERATOR_SALARY)
+        factory = Factory(self.env, 0, self.module, CD, 1, MAINTENANCE_MAN_SALARY, OPERATOR_SALARY)
         time = 1000
         self.env.run(until=time)
-        self.assertEqual(self.module.stock.purchase_costs, 0)
-        for component in self.module.breakable_components:
-            self.assertEqual(component.stock.purchase_costs, 0)
-
-        self.assertEqual(self.module.stock.inventory_holding_costs,
-                         self.module.stock.capacity * self.module.stock.unit_holding_costs * time)
-        for component in self.module.breakable_components:
-            self.assertEqual(component.stock.inventory_holding_costs,
-                             component.stock.capacity * component.stock.unit_holding_costs * time)
+        self.assertEqual(factory.maintenance_men_salary, 0)
 
 
 class TestRandomSeed(unittest.TestCase):
