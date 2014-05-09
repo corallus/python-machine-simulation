@@ -173,6 +173,7 @@ class Machine(object):
         """
         Will repair machine by either replacing the module or the broken part
         """
+        self.broken = True
         if self.factory.maintenance_men:
             with self.factory.maintenance_men.request() as req:
                 yield req
@@ -180,13 +181,15 @@ class Machine(object):
             yield self.env.process(self.module.replace())
         else:
             yield self.env.process(broken_component.replace())
+        self.broken = False
         self.run()
 
     def process_downtime_costs(self):
         """
         Keeps track of downtime costs of machine
         """
-        self.downtime_costs += self.costs_per_unit_downtime
+        if self.broken:
+            self.downtime_costs += self.costs_per_unit_downtime
         yield self.env.timeout(1)
 
 
