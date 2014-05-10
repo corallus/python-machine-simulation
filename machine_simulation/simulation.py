@@ -12,6 +12,7 @@ class ComponentStock(simpy.Container):
     purchase_costs = 0
     inventory_holding_costs_saved = 0  # the amount saved
     in_order = 0
+    last_order_at = 0
 
     def __init__(self, env, unit_purchase_costs, delivery_time, unit_holding_costs, capacity=float('inf')):
         """
@@ -29,7 +30,10 @@ class ComponentStock(simpy.Container):
 
     @property
     def inventory_holding_costs(self):
-        return self.env.now * self.unit_holding_costs - self.inventory_holding_costs_saved
+        costs = self.env.now * self.unit_holding_costs - self.inventory_holding_costs_saved
+        if self.in_order:
+            costs -= (self.env.now - self.last_order_at) * (self.capacity - self.in_order) * self.unit_holding_costs
+        return costs
 
     def get(self, amount):
         """
@@ -37,10 +41,10 @@ class ComponentStock(simpy.Container):
         :return: returns a ContainerGet event
         """
         if self.level - amount + self.in_order < self.capacity:
-            start = self.env.now
+            self.last_order_at = self.env.now
             self.env.process(self.order(amount))
-            self.inventory_holding_costs_saved += (self.env.now - start) * (self.capacity - amount) * \
-                                                  self.unit_holding_costs
+            self.inventory_holding_costs_saved += (self.env.now - self.last_order_at) * (
+            self.capacity - amount) * self.unit_holding_costs
         return super(ComponentStock, self).get(amount)
 
     def order(self, amount):
@@ -84,6 +88,7 @@ class BreakableComponent(Component):
     """
     A component that breaks down every once in a while
     """
+    times_broken = 0
 
     def __init__(self, env, name, time_replacement, stock, mean, replace_module):
         """
@@ -95,7 +100,7 @@ class BreakableComponent(Component):
         :param replace_module: whether to replace parent module when its broken
         """
         if replace_module:
-            stock.unit_inventory_holding_costs = 0
+            stock.unit_holding_costs = 0
         super(BreakableComponent, self).__init__(env, time_replacement, stock)
         self.name = name
         self.mean = mean
@@ -136,6 +141,7 @@ class Module(Component):
             broken_component, time = min([(component, component.time_to_failure())
                                           for component in self.breakable_components], key=lambda result: result[1])
             yield self.env.timeout(time)
+            broken_component.times_broken += 1
             self.env.process(machine.repair(broken_component))
 
 
@@ -145,6 +151,7 @@ class Machine(object):
     """
     downtime_costs = 0
     broken = False
+    broken_since = 0
 
     def __init__(self, env, module, costs_per_unit_downtime, factory):
         """
@@ -185,10 +192,10 @@ class Machine(object):
 
     @property
     def total_downtime_costs(self):
+        costs = self.downtime_costs
         if self.broken:
-            return (self.env.now - self.broken_since) * self.costs_per_unit_downtime + self.downtime_costs
-        else:
-            return self.downtime_costs
+            costs += (self.env.now - self.broken_since) * self.costs_per_unit_downtime
+        return costs
 
 
 class Factory(object):
