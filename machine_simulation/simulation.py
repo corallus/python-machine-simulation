@@ -10,7 +10,7 @@ class ComponentStock(simpy.Container):
     Implementation of a (S-1,S) inventory management system
     """
     purchase_costs = 0
-    inventory_holding_costs = 0
+    inventory_holding_costs_saved = 0  # the amount saved
     in_order = 0
 
     def __init__(self, env, unit_purchase_costs, delivery_time, unit_holding_costs, capacity=float('inf')):
@@ -26,7 +26,10 @@ class ComponentStock(simpy.Container):
         self.unit_purchase_costs = unit_purchase_costs
         self.delivery_time = delivery_time
         self.unit_holding_costs = unit_holding_costs
-        self.env.process(self.inventory())
+
+    @property
+    def inventory_holding_costs(self):
+        return self.env.now * self.unit_holding_costs - self.inventory_holding_costs_saved
 
     def get(self, amount):
         """
@@ -34,7 +37,10 @@ class ComponentStock(simpy.Container):
         :return: returns a ContainerGet event
         """
         if self.level - amount + self.in_order < self.capacity:
+            start = self.env.now
             self.env.process(self.order(amount))
+            self.inventory_holding_costs_saved += (self.env.now - start) * (self.capacity - amount) * \
+                                                  self.unit_holding_costs
         return super(ComponentStock, self).get(amount)
 
     def order(self, amount):
@@ -47,14 +53,6 @@ class ComponentStock(simpy.Container):
         self.in_order -= amount
         self.purchase_costs += self.unit_purchase_costs
         yield self.put(amount)
-
-    def inventory(self):
-        """
-        A process which keeps track if inventory holding costs
-        """
-        while True:
-            self.inventory_holding_costs += self.level * self.unit_holding_costs
-            yield self.env.timeout(1)
 
 
 class Component(object):
@@ -109,7 +107,7 @@ class BreakableComponent(Component):
         :return: float
         """
         try:
-            return random.expovariate(1.0/self.mean)
+            return random.expovariate(1.0 / self.mean)
         except ZeroDivisionError:
             return sys.maxint
 
@@ -146,6 +144,7 @@ class Machine(object):
     A machine
     """
     downtime_costs = 0
+    broken = False
 
     def __init__(self, env, module, costs_per_unit_downtime, factory):
         """
@@ -159,9 +158,7 @@ class Machine(object):
         self.env = env
         self.module = module
         self.costs_per_unit_downtime = costs_per_unit_downtime
-        self.broken = False
         self.run()
-        self.env.process(self.process_downtime_costs())
 
     def run(self):
         """
@@ -174,6 +171,7 @@ class Machine(object):
         Will repair machine by either replacing the module or the broken part
         """
         self.broken = True
+        self.broken_since = self.env.now
         if self.factory.maintenance_men:
             with self.factory.maintenance_men.request() as req:
                 yield req
@@ -181,16 +179,16 @@ class Machine(object):
             yield self.env.process(self.module.replace())
         else:
             yield self.env.process(broken_component.replace())
+        self.downtime_costs += (self.env.now - self.broken_since) * self.costs_per_unit_downtime
         self.broken = False
         self.run()
 
-    def process_downtime_costs(self):
-        """
-        Keeps track of downtime costs of machine
-        """
+    @property
+    def total_downtime_costs(self):
         if self.broken:
-            self.downtime_costs += self.costs_per_unit_downtime
-        yield self.env.timeout(1)
+            return (self.env.now - self.broken_since) * self.costs_per_unit_downtime + self.downtime_costs
+        else:
+            return self.downtime_costs
 
 
 class Factory(object):
@@ -228,8 +226,8 @@ class Factory(object):
         :return:
         """
         costs = self.module.stock.purchase_costs + self.module.stock.inventory_holding_costs
-        costs += sum([machine.downtime_costs for machine in self.machines])
-        costs += sum([component.stock.purchase_costs+component.stock.inventory_holding_costs
+        costs += sum([machine.total_downtime_costs for machine in self.machines])
+        costs += sum([component.stock.purchase_costs + component.stock.inventory_holding_costs
                       for component in self.module.breakable_components])
         costs += self.operators_salary + self.maintenance_men_salary
         return costs

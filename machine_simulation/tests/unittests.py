@@ -90,6 +90,33 @@ class TestModule(unittest.TestCase):
         self.assertEqual(time, 4)
 
 
+class TestDowntimeCosts(unittest.TestCase):
+
+    def setUp(self):
+        self.env = simpy.Environment()
+        breakable_components = [
+            TestBreakableComponent(self.env, "Part A", 2, ComponentStock(self.env, CA, LA, CHA, 1000), 4, False),
+            TestBreakableComponent(self.env, "Part B", 2, ComponentStock(self.env, CB, LB, CHB, 1000), 5, False),
+        ]
+        self.downtime_costs = CD
+        module = Module(self.env, TRAB, ComponentStock(self.env, CAB, LAB, CHAB, SAB), breakable_components)
+        self.factory = Factory(self.env, 0, module, self.downtime_costs, 1, MAINTENANCE_MAN_SALARY, OPERATOR_SALARY)
+        self.part_a = breakable_components[0]
+        self.machine = self.factory.machines[0]
+
+    def test_single_cycle(self):
+        self.env.run(until=1*(self.part_a.time_replacement + self.part_a.mean))
+        self.assertEqual(self.machine.total_downtime_costs, self.part_a.time_replacement * self.machine.costs_per_unit_downtime)
+
+    def test_multiple_cycles(self):
+        self.env.run(until=10*(self.part_a.mean + self.part_a.time_replacement))
+        self.assertEqual(self.machine.total_downtime_costs, 10 * self.part_a.time_replacement * self.machine.costs_per_unit_downtime)
+
+    def test_broken_cycle(self):
+        self.env.run(until=self.part_a.mean + self.part_a.time_replacement - 1)
+        self.assertEqual(self.machine.total_downtime_costs, (self.part_a.time_replacement - 1) * self.machine.costs_per_unit_downtime)
+
+
 class TestMachine(unittest.TestCase):
     """
     Tests Machine class
