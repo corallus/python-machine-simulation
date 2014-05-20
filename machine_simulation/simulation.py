@@ -44,7 +44,7 @@ class ComponentStock(simpy.Container):
             self.last_order_at = self.env.now
             self.env.process(self.order(amount))
             self.inventory_holding_costs_saved += (self.env.now - self.last_order_at) * (
-            self.capacity - amount) * self.unit_holding_costs
+                self.capacity - amount) * self.unit_holding_costs
         return super(ComponentStock, self).get(amount)
 
     def order(self, amount):
@@ -53,9 +53,9 @@ class ComponentStock(simpy.Container):
         :param amount: the number of items to order
         """
         self.in_order += amount
+        self.purchase_costs += self.unit_purchase_costs
         yield self.env.timeout(self.delivery_time)
         self.in_order -= amount
-        self.purchase_costs += self.unit_purchase_costs
         yield self.put(amount)
 
 
