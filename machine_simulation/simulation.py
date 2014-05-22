@@ -36,16 +36,20 @@ class ComponentStock(simpy.Container):
         return costs
 
     def get(self, amount):
+        return super(ComponentStock, self).get(amount)
+
+    def _do_get(self, event):
         """
         :param amount: the amount of stock requested
         :return: returns a ContainerGet event
         """
-        if self.level - amount + self.in_order < self.capacity:
+        if self._level >= event.amount:
             self.last_order_at = self.env.now
-            self.env.process(self.order(amount))
+            self.env.process(self.order(event.amount))
             self.inventory_holding_costs_saved += (self.env.now - self.last_order_at) * (
-                self.capacity - amount) * self.unit_holding_costs
-        return super(ComponentStock, self).get(amount)
+                self.capacity - event.amount) * self.unit_holding_costs
+            self._level -= event.amount
+            event.succeed()
 
     def order(self, amount):
         """
@@ -53,7 +57,7 @@ class ComponentStock(simpy.Container):
         :param amount: the number of items to order
         """
         self.in_order += amount
-        self.purchase_costs += self.unit_purchase_costs
+        self.purchase_costs += amount * self.unit_purchase_costs
         yield self.env.timeout(self.delivery_time)
         self.in_order -= amount
         yield self.put(amount)
@@ -129,20 +133,30 @@ class Module(Component):
         :param stock: the stock of this item
         :param breakable_components: list of BreakableComponent
         """
+        stock_costs = False
+        for component in breakable_components:
+            if component.replace_module:
+                stock_costs = True
+        if not stock_costs:
+            stock.unit_holding_costs = 0
         super(Module, self).__init__(env, time_replacement, stock)
         self.breakable_components = breakable_components
 
-    def break_module(self, machine):
+    def run(self, machine):
         """
         Waits till first part gets broken and tells this to the machine
         :param machine: the machine which should be broken when this breaks
         """
-        if len(self.breakable_components) > 0:
-            broken_component, time = min([(component, component.time_to_failure())
-                                          for component in self.breakable_components], key=lambda result: result[1])
-            yield self.env.timeout(time)
-            broken_component.times_broken += 1
-            self.env.process(machine.repair(broken_component))
+        while True:
+            if len(self.breakable_components) > 0:
+                broken_component, time = self.get_first_broken_component()
+                yield self.env.timeout(time)
+                broken_component.times_broken += 1
+                yield self.env.process(machine.repair(broken_component))
+
+    def get_first_broken_component(self):
+        return min([(component, component.time_to_failure()) for component in self.breakable_components],
+                   key=lambda result: result[1])
 
 
 class Machine(object):
@@ -165,13 +179,7 @@ class Machine(object):
         self.env = env
         self.module = module
         self.costs_per_unit_downtime = costs_per_unit_downtime
-        self.run()
-
-    def run(self):
-        """
-        Break machine every once in while
-        """
-        self.env.process(self.module.break_module(self))
+        self.env.process(self.module.run(self))
 
     def repair(self, broken_component):
         """
@@ -182,13 +190,17 @@ class Machine(object):
         if self.factory.maintenance_men:
             with self.factory.maintenance_men.request() as req:
                 yield req
-        if broken_component.replace_module:
-            yield self.env.process(self.module.replace())
+                if broken_component.replace_module:
+                    yield self.env.process(self.module.replace())
+                else:
+                    yield self.env.process(broken_component.replace())
         else:
-            yield self.env.process(broken_component.replace())
+            if broken_component.replace_module:
+                yield self.env.process(self.module.replace())
+            else:
+                yield self.env.process(broken_component.replace())
         self.downtime_costs += (self.env.now - self.broken_since) * self.costs_per_unit_downtime
         self.broken = False
-        self.run()
 
     @property
     def total_downtime_costs(self):
@@ -227,6 +239,7 @@ class Factory(object):
         self.maintenance_man_salary = maintenance_man_salary
         self.module = module
 
+    @property
     def costs(self):
         """
         Calculates total costs for this factory

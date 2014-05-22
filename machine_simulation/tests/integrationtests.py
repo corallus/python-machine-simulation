@@ -34,7 +34,6 @@ class IntegrationTest(unittest.TestCase):
 
 
 class TestRandomSeed(unittest.TestCase):
-
     def test_random_seed(self):
         """
         Tests whether simulation results are the same for 2 simulations if a random seed is set
@@ -65,5 +64,6 @@ class TestRandomSeed(unittest.TestCase):
         index = 0
         for component1 in factory1.module.breakable_components:
             self.assertEqual(component1.stock.purchase_costs,
-                             factory2.module.breakable_components[index].stock.purchase_costs, "%s %s" % (component1.name, factory2.module.breakable_components[index].name))
+                             factory2.module.breakable_components[index].stock.purchase_costs,
+                             "%s %s" % (component1.name, factory2.module.breakable_components[index].name))
             index += 1
