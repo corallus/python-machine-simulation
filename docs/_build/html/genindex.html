@@ -52,7 +52,6 @@
  <a href="#B"><strong>B</strong></a>
  | <a href="#C"><strong>C</strong></a>
  | <a href="#F"><strong>F</strong></a>
- | <a href="#G"><strong>G</strong></a>
  | <a href="#I"><strong>I</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#O"><strong>O</strong></a>
@@ -63,12 +62,6 @@
 </div>
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="ref/classes.html#machine_simulation.simulation.Module.break_module">break_module() (machine_simulation.simulation.Module method)</a>
-  </dt>
-
-  </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="ref/classes.html#machine_simulation.simulation.BreakableComponent">BreakableComponent (class in machine_simulation.simulation)</a>
@@ -91,7 +84,7 @@
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="ref/classes.html#machine_simulation.simulation.Factory.costs">costs() (machine_simulation.simulation.Factory method)</a>
+  <dt><a href="ref/classes.html#machine_simulation.simulation.Factory.costs">costs (machine_simulation.simulation.Factory attribute)</a>
   </dt>
 
   </dl></td>
@@ -102,16 +95,6 @@
   <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="ref/classes.html#machine_simulation.simulation.Factory">Factory (class in machine_simulation.simulation)</a>
-  </dt>
-
-  </dl></td>
-</tr></table>
-
-<h2 id="G">G</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="ref/classes.html#machine_simulation.simulation.ComponentStock.get">get() (machine_simulation.simulation.ComponentStock method)</a>
   </dt>
 
   </dl></td>
@@ -179,7 +162,7 @@
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="ref/classes.html#machine_simulation.simulation.Machine.run">run() (machine_simulation.simulation.Machine method)</a>
+  <dt><a href="ref/classes.html#machine_simulation.simulation.Module.run">run() (machine_simulation.simulation.Module method)</a>
   </dt>
 
   </dl></td>
@@ -198,15 +181,27 @@
   </dt>
 
         
+  <dt><a href="development/tests.html#machine_simulation.tests.unittests.TestComponentStockBoundaryCases.setUp">(machine_simulation.tests.unittests.TestComponentStockBoundaryCases method)</a>
+  </dt>
+
+        
   <dt><a href="development/tests.html#machine_simulation.tests.unittests.TestDowntimeCosts.setUp">(machine_simulation.tests.unittests.TestDowntimeCosts method)</a>
   </dt>
 
         
-  <dt><a href="development/tests.html#machine_simulation.tests.unittests.TestMachine.setUp">(machine_simulation.tests.unittests.TestMachine method)</a>
+  <dt><a href="development/tests.html#machine_simulation.tests.unittests.TestModule.setUp">(machine_simulation.tests.unittests.TestModule method)</a>
   </dt>
 
         
-  <dt><a href="development/tests.html#machine_simulation.tests.unittests.TestModule.setUp">(machine_simulation.tests.unittests.TestModule method)</a>
+  <dt><a href="development/tests.html#machine_simulation.tests.unittests.TestPolicies.setUp">(machine_simulation.tests.unittests.TestPolicies method)</a>
+  </dt>
+
+        
+  <dt><a href="development/tests.html#machine_simulation.tests.unittests.TestReplacePartReplacePart.setUp">(machine_simulation.tests.unittests.TestReplacePartReplacePart method)</a>
+  </dt>
+
+        
+  <dt><a href="development/tests.html#machine_simulation.tests.unittests.TestSinglePartReplaceModule.setUp">(machine_simulation.tests.unittests.TestSinglePartReplaceModule method)</a>
   </dt>
 
       </dl></dd>
@@ -217,15 +212,15 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="development/tests.html#machine_simulation.tests.unittests.TestModule.test_break_module">test_break_module() (machine_simulation.tests.unittests.TestModule method)</a>
-  </dt>
-
-      
   <dt><a href="development/tests.html#machine_simulation.tests.unittests.TestDowntimeCosts.test_broken_cycle">test_broken_cycle() (machine_simulation.tests.unittests.TestDowntimeCosts method)</a>
   </dt>
 
       
-  <dt><a href="development/tests.html#machine_simulation.tests.unittests.TestComponentStock.test_empty_stock">test_empty_stock() (machine_simulation.tests.unittests.TestComponentStock method)</a>
+  <dt><a href="development/tests.html#machine_simulation.tests.unittests.TestComponentStockBoundaryCases.test_empty_stock">test_empty_stock() (machine_simulation.tests.unittests.TestComponentStockBoundaryCases method)</a>
+  </dt>
+
+      
+  <dt><a href="development/tests.html#machine_simulation.tests.unittests.TestModule.test_get_first_broken_component">test_get_first_broken_component() (machine_simulation.tests.unittests.TestModule method)</a>
   </dt>
 
       
@@ -241,19 +236,31 @@
   </dt>
 
       
-  <dt><a href="development/tests.html#machine_simulation.tests.unittests.TestMachine.test_policy_a">test_policy_a() (machine_simulation.tests.unittests.TestMachine method)</a>
+  <dt><a href="development/tests.html#machine_simulation.tests.unittests.TestSinglePartReplaceModule.test_multiple_machines_insufficient_stock">test_multiple_machines_insufficient_stock() (machine_simulation.tests.unittests.TestSinglePartReplaceModule method)</a>
   </dt>
 
       
-  <dt><a href="development/tests.html#machine_simulation.tests.unittests.TestMachine.test_policy_b">test_policy_b() (machine_simulation.tests.unittests.TestMachine method)</a>
+  <dt><a href="development/tests.html#machine_simulation.tests.unittests.TestSinglePartReplaceModule.test_multiple_machines_sufficient_stock">test_multiple_machines_sufficient_stock() (machine_simulation.tests.unittests.TestSinglePartReplaceModule method)</a>
   </dt>
 
       
-  <dt><a href="development/tests.html#machine_simulation.tests.unittests.TestMachine.test_policy_c">test_policy_c() (machine_simulation.tests.unittests.TestMachine method)</a>
+  <dt><a href="development/tests.html#machine_simulation.tests.unittests.TestComponentStockBoundaryCases.test_order_full_stock">test_order_full_stock() (machine_simulation.tests.unittests.TestComponentStockBoundaryCases method)</a>
   </dt>
 
       
-  <dt><a href="development/tests.html#machine_simulation.tests.unittests.TestMachine.test_policy_o">test_policy_o() (machine_simulation.tests.unittests.TestMachine method)</a>
+  <dt><a href="development/tests.html#machine_simulation.tests.unittests.TestPolicies.test_policy_a">test_policy_a() (machine_simulation.tests.unittests.TestPolicies method)</a>
+  </dt>
+
+      
+  <dt><a href="development/tests.html#machine_simulation.tests.unittests.TestPolicies.test_policy_b">test_policy_b() (machine_simulation.tests.unittests.TestPolicies method)</a>
+  </dt>
+
+      
+  <dt><a href="development/tests.html#machine_simulation.tests.unittests.TestPolicies.test_policy_c">test_policy_c() (machine_simulation.tests.unittests.TestPolicies method)</a>
+  </dt>
+
+      
+  <dt><a href="development/tests.html#machine_simulation.tests.unittests.TestPolicies.test_policy_o">test_policy_o() (machine_simulation.tests.unittests.TestPolicies method)</a>
   </dt>
 
       
@@ -271,6 +278,16 @@
   </dt>
 
       
+  <dt><a href="development/tests.html#machine_simulation.tests.unittests.TestReplacePartReplacePart.test_single_machine_sufficient_stock">test_single_machine_sufficient_stock() (machine_simulation.tests.unittests.TestReplacePartReplacePart method)</a>
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="development/tests.html#machine_simulation.tests.unittests.TestSinglePartReplaceModule.test_single_machine_sufficient_stock">(machine_simulation.tests.unittests.TestSinglePartReplaceModule method)</a>
+  </dt>
+
+      </dl></dd>
+      
   <dt><a href="development/tests.html#machine_simulation.tests.integrationtests.IntegrationTest.test_zero_maintenance_men">test_zero_maintenance_men() (machine_simulation.tests.integrationtests.IntegrationTest method)</a>
   </dt>
 
@@ -279,11 +296,11 @@
   </dt>
 
       
-  <dt><a href="development/tests.html#machine_simulation.tests.unittests.TestDowntimeCosts">TestDowntimeCosts (class in machine_simulation.tests.unittests)</a>
+  <dt><a href="development/tests.html#machine_simulation.tests.unittests.TestComponentStockBoundaryCases">TestComponentStockBoundaryCases (class in machine_simulation.tests.unittests)</a>
   </dt>
 
       
-  <dt><a href="development/tests.html#machine_simulation.tests.unittests.TestMachine">TestMachine (class in machine_simulation.tests.unittests)</a>
+  <dt><a href="development/tests.html#machine_simulation.tests.unittests.TestDowntimeCosts">TestDowntimeCosts (class in machine_simulation.tests.unittests)</a>
   </dt>
 
       
@@ -291,7 +308,19 @@
   </dt>
 
       
+  <dt><a href="development/tests.html#machine_simulation.tests.unittests.TestPolicies">TestPolicies (class in machine_simulation.tests.unittests)</a>
+  </dt>
+
+      
   <dt><a href="development/tests.html#machine_simulation.tests.integrationtests.TestRandomSeed">TestRandomSeed (class in machine_simulation.tests.integrationtests)</a>
+  </dt>
+
+      
+  <dt><a href="development/tests.html#machine_simulation.tests.unittests.TestReplacePartReplacePart">TestReplacePartReplacePart (class in machine_simulation.tests.unittests)</a>
+  </dt>
+
+      
+  <dt><a href="development/tests.html#machine_simulation.tests.unittests.TestSinglePartReplaceModule">TestSinglePartReplaceModule (class in machine_simulation.tests.unittests)</a>
   </dt>
 
       
