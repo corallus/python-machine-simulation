@@ -8,8 +8,8 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='python-machine-simulation',
-    version='1.0',
-    packages=['machine_simulation'],
+    version='1.1',
+    packages=['machine_simulation', 'machine_simulation.tests'],
     include_package_data=True,
     license='BSD License',  # example license
     description='',

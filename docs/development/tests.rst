@@ -3,7 +3,7 @@ Tests
 =====
 
 :mod:`unittests` Module
--------------------------
+-----------------------
 
 .. automodule:: machine_simulation.tests.unittests
    :members:
@@ -11,7 +11,7 @@ Tests
    :show-inheritance:
 
 :mod:`integrationtests` Module
--------------------------
+------------------------------
 
 .. automodule:: machine_simulation.tests.integrationtests
    :members:
