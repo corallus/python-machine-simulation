@@ -1,0 +1,324 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Tests &mdash; Machine simulation 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Machine simulation 1.0 documentation" href="../index.html" />
+    <link rel="prev" title="Class reference" href="../ref/classes.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../ref/classes.html" title="Class reference"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Machine simulation 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="tests">
+<h1>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-machine_simulation.tests.unittests">
+<span id="unittests-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">unittests</span></tt> Module<a class="headerlink" href="#module-machine_simulation.tests.unittests" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="machine_simulation.tests.unittests.TestComponentStock">
+<em class="property">class </em><tt class="descclassname">machine_simulation.tests.unittests.</tt><tt class="descname">TestComponentStock</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestComponentStock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></tt></p>
+<p>Tests whether ComponentStock behaves like (S-1,S) inventory system and tests the inventory holding costs</p>
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestComponentStock.setUp">
+<tt class="descname">setUp</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestComponentStock.setUp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestComponentStock.test_inventory">
+<tt class="descname">test_inventory</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestComponentStock.test_inventory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests whether inventory holding costs are accounted for</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestComponentStock.test_multiple_get">
+<tt class="descname">test_multiple_get</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestComponentStock.test_multiple_get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests whether stock is refilled after multiple items have been retrieved</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestComponentStock.test_single_get">
+<tt class="descname">test_single_get</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestComponentStock.test_single_get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether stock is refilled after an item has been retrieved</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="machine_simulation.tests.unittests.TestComponentStockBoundaryCases">
+<em class="property">class </em><tt class="descclassname">machine_simulation.tests.unittests.</tt><tt class="descname">TestComponentStockBoundaryCases</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestComponentStockBoundaryCases" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></tt></p>
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestComponentStockBoundaryCases.setUp">
+<tt class="descname">setUp</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestComponentStockBoundaryCases.setUp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestComponentStockBoundaryCases.test_empty_stock">
+<tt class="descname">test_empty_stock</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestComponentStockBoundaryCases.test_empty_stock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests whether stock behaves correctly when out-of-stock</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestComponentStockBoundaryCases.test_order_full_stock">
+<tt class="descname">test_order_full_stock</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestComponentStockBoundaryCases.test_order_full_stock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests whether an item is ordered when the stock is full. Succeeds when an item is indeed ordered.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="machine_simulation.tests.unittests.TestDowntimeCosts">
+<em class="property">class </em><tt class="descclassname">machine_simulation.tests.unittests.</tt><tt class="descname">TestDowntimeCosts</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestDowntimeCosts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></tt></p>
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestDowntimeCosts.setUp">
+<tt class="descname">setUp</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestDowntimeCosts.setUp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestDowntimeCosts.test_broken_cycle">
+<tt class="descname">test_broken_cycle</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestDowntimeCosts.test_broken_cycle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestDowntimeCosts.test_multiple_cycles">
+<tt class="descname">test_multiple_cycles</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestDowntimeCosts.test_multiple_cycles" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestDowntimeCosts.test_single_cycle">
+<tt class="descname">test_single_cycle</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestDowntimeCosts.test_single_cycle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="machine_simulation.tests.unittests.TestModule">
+<em class="property">class </em><tt class="descclassname">machine_simulation.tests.unittests.</tt><tt class="descname">TestModule</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestModule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></tt></p>
+<p>Tests Module class</p>
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestModule.setUp">
+<tt class="descname">setUp</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestModule.setUp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestModule.test_get_first_broken_component">
+<tt class="descname">test_get_first_broken_component</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestModule.test_get_first_broken_component" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests whether the part of the module that is broken first is indeed return by a function inside break_module
+process</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="machine_simulation.tests.unittests.TestPolicies">
+<em class="property">class </em><tt class="descclassname">machine_simulation.tests.unittests.</tt><tt class="descname">TestPolicies</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestPolicies" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></tt></p>
+<p>Tests Machine class</p>
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestPolicies.setUp">
+<tt class="descname">setUp</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestPolicies.setUp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestPolicies.test_policy_a">
+<tt class="descname">test_policy_a</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestPolicies.test_policy_a" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests situation where module is replaced when first part is broken</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestPolicies.test_policy_b">
+<tt class="descname">test_policy_b</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestPolicies.test_policy_b" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests situation where module is replaced when second part is broken</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestPolicies.test_policy_c">
+<tt class="descname">test_policy_c</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestPolicies.test_policy_c" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests situation where module is always replaced</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestPolicies.test_policy_o">
+<tt class="descname">test_policy_o</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestPolicies.test_policy_o" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests situation where part always gets replaced</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="machine_simulation.tests.unittests.TestReplacePartReplacePart">
+<em class="property">class </em><tt class="descclassname">machine_simulation.tests.unittests.</tt><tt class="descname">TestReplacePartReplacePart</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestReplacePartReplacePart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></tt></p>
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestReplacePartReplacePart.setUp">
+<tt class="descname">setUp</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestReplacePartReplacePart.setUp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestReplacePartReplacePart.test_single_machine_sufficient_stock">
+<tt class="descname">test_single_machine_sufficient_stock</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestReplacePartReplacePart.test_single_machine_sufficient_stock" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="machine_simulation.tests.unittests.TestSinglePartReplaceModule">
+<em class="property">class </em><tt class="descclassname">machine_simulation.tests.unittests.</tt><tt class="descname">TestSinglePartReplaceModule</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestSinglePartReplaceModule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></tt></p>
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestSinglePartReplaceModule.setUp">
+<tt class="descname">setUp</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestSinglePartReplaceModule.setUp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestSinglePartReplaceModule.test_multiple_machines_insufficient_stock">
+<tt class="descname">test_multiple_machines_insufficient_stock</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestSinglePartReplaceModule.test_multiple_machines_insufficient_stock" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestSinglePartReplaceModule.test_multiple_machines_sufficient_stock">
+<tt class="descname">test_multiple_machines_sufficient_stock</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestSinglePartReplaceModule.test_multiple_machines_sufficient_stock" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="machine_simulation.tests.unittests.TestSinglePartReplaceModule.test_single_machine_sufficient_stock">
+<tt class="descname">test_single_machine_sufficient_stock</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.unittests.TestSinglePartReplaceModule.test_single_machine_sufficient_stock" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="integrationtests-module">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">integrationtests</span></tt> Module<a class="headerlink" href="#integrationtests-module" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-machine_simulation.tests.integrationtests"></span><dl class="class">
+<dt id="machine_simulation.tests.integrationtests.IntegrationTest">
+<em class="property">class </em><tt class="descclassname">machine_simulation.tests.integrationtests.</tt><tt class="descname">IntegrationTest</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="headerlink" href="#machine_simulation.tests.integrationtests.IntegrationTest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></tt></p>
+<p>Test boundary cases</p>
+<dl class="method">
+<dt id="machine_simulation.tests.integrationtests.IntegrationTest.setUp">
+<tt class="descname">setUp</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.integrationtests.IntegrationTest.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets up machine with module consisting of 2 parts with non-zero inventory holding costs and non-zero purchase
+costs</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="machine_simulation.tests.integrationtests.IntegrationTest.test_zero_maintenance_men">
+<tt class="descname">test_zero_maintenance_men</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.integrationtests.IntegrationTest.test_zero_maintenance_men" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests whether operators take care of replacement when number of maintenance men set to 0</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="machine_simulation.tests.integrationtests.TestRandomSeed">
+<em class="property">class </em><tt class="descclassname">machine_simulation.tests.integrationtests.</tt><tt class="descname">TestRandomSeed</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="headerlink" href="#machine_simulation.tests.integrationtests.TestRandomSeed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></tt></p>
+<dl class="method">
+<dt id="machine_simulation.tests.integrationtests.TestRandomSeed.test_random_seed">
+<tt class="descname">test_random_seed</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.tests.integrationtests.TestRandomSeed.test_random_seed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests whether simulation results are the same for 2 simulations if a random seed is set</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Tests</a><ul>
+<li><a class="reference internal" href="#module-machine_simulation.tests.unittests"><tt class="docutils literal"><span class="pre">unittests</span></tt> Module</a></li>
+<li><a class="reference internal" href="#integrationtests-module"><tt class="docutils literal"><span class="pre">integrationtests</span></tt> Module</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../ref/classes.html"
+                        title="previous chapter">Class reference</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../ref/classes.html" title="Class reference"
+             >previous</a> |</li>
+        <li><a href="../index.html">Machine simulation 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Vincent van Bergen.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

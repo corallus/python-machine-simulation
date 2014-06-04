@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Class reference &mdash; Machine simulation 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Machine simulation 1.0 documentation" href="../index.html" />
+    <link rel="next" title="Tests" href="../development/tests.html" />
+    <link rel="prev" title="Replace module or parts’ documentation!" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../development/tests.html" title="Tests"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../index.html" title="Replace module or parts’ documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Machine simulation 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-machine_simulation.simulation">
+<span id="class-reference"></span><h1>Class reference<a class="headerlink" href="#module-machine_simulation.simulation" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="machine_simulation.simulation.BreakableComponent">
+<em class="property">class </em><tt class="descclassname">machine_simulation.simulation.</tt><tt class="descname">BreakableComponent</tt><big>(</big><em>env</em>, <em>name</em>, <em>time_replacement</em>, <em>stock</em>, <em>mean</em>, <em>replace_module</em><big>)</big><a class="headerlink" href="#machine_simulation.simulation.BreakableComponent" title="Permalink to this definition">¶</a></dt>
+<dd><p>A component that breaks down every once in a while</p>
+<dl class="method">
+<dt id="machine_simulation.simulation.BreakableComponent.time_to_failure">
+<tt class="descname">time_to_failure</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.simulation.BreakableComponent.time_to_failure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the time until next failure if this component, using the mean time to failure of this component.
+:return: float</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="machine_simulation.simulation.Component">
+<em class="property">class </em><tt class="descclassname">machine_simulation.simulation.</tt><tt class="descname">Component</tt><big>(</big><em>env</em>, <em>time_replacement</em>, <em>stock</em><big>)</big><a class="headerlink" href="#machine_simulation.simulation.Component" title="Permalink to this definition">¶</a></dt>
+<dd><p>The specification of a part/module.</p>
+<dl class="method">
+<dt id="machine_simulation.simulation.Component.replace">
+<tt class="descname">replace</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.simulation.Component.replace" title="Permalink to this definition">¶</a></dt>
+<dd><p>A process which replaces this component by a new one</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="machine_simulation.simulation.ComponentStock">
+<em class="property">class </em><tt class="descclassname">machine_simulation.simulation.</tt><tt class="descname">ComponentStock</tt><big>(</big><em>env</em>, <em>unit_purchase_costs</em>, <em>delivery_time</em>, <em>unit_holding_costs</em>, <em>capacity=inf</em><big>)</big><a class="headerlink" href="#machine_simulation.simulation.ComponentStock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implementation of a (S-1,S) inventory management system</p>
+<dl class="method">
+<dt id="machine_simulation.simulation.ComponentStock.order">
+<tt class="descname">order</tt><big>(</big><em>amount</em><big>)</big><a class="headerlink" href="#machine_simulation.simulation.ComponentStock.order" title="Permalink to this definition">¶</a></dt>
+<dd><p>A process to order an amount of items
+:param amount: the number of items to order</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="machine_simulation.simulation.Factory">
+<em class="property">class </em><tt class="descclassname">machine_simulation.simulation.</tt><tt class="descname">Factory</tt><big>(</big><em>env</em>, <em>number_maintenance_men</em>, <em>module</em>, <em>costs_per_unit_downtime</em>, <em>number_of_machines</em>, <em>operator_salary</em>, <em>maintenance_man_salary</em><big>)</big><a class="headerlink" href="#machine_simulation.simulation.Factory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Factory consisting of multiple Machines, operators and maintenance men</p>
+<dl class="attribute">
+<dt id="machine_simulation.simulation.Factory.costs">
+<tt class="descname">costs</tt><a class="headerlink" href="#machine_simulation.simulation.Factory.costs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates total costs for this factory
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="machine_simulation.simulation.Factory.track_salary">
+<tt class="descname">track_salary</tt><big>(</big><big>)</big><a class="headerlink" href="#machine_simulation.simulation.Factory.track_salary" title="Permalink to this definition">¶</a></dt>
+<dd><p>A process which keeps track salary costs</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="machine_simulation.simulation.Machine">
+<em class="property">class </em><tt class="descclassname">machine_simulation.simulation.</tt><tt class="descname">Machine</tt><big>(</big><em>env</em>, <em>module</em>, <em>costs_per_unit_downtime</em>, <em>factory</em><big>)</big><a class="headerlink" href="#machine_simulation.simulation.Machine" title="Permalink to this definition">¶</a></dt>
+<dd><p>A machine</p>
+<dl class="method">
+<dt id="machine_simulation.simulation.Machine.repair">
+<tt class="descname">repair</tt><big>(</big><em>broken_component</em><big>)</big><a class="headerlink" href="#machine_simulation.simulation.Machine.repair" title="Permalink to this definition">¶</a></dt>
+<dd><p>Will repair machine by either replacing the module or the broken part</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="machine_simulation.simulation.Module">
+<em class="property">class </em><tt class="descclassname">machine_simulation.simulation.</tt><tt class="descname">Module</tt><big>(</big><em>env</em>, <em>time_replacement</em>, <em>stock</em>, <em>breakable_components</em><big>)</big><a class="headerlink" href="#machine_simulation.simulation.Module" title="Permalink to this definition">¶</a></dt>
+<dd><p>A container for multiple breakable components</p>
+<dl class="method">
+<dt id="machine_simulation.simulation.Module.run">
+<tt class="descname">run</tt><big>(</big><em>machine</em><big>)</big><a class="headerlink" href="#machine_simulation.simulation.Module.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waits till first part gets broken and tells this to the machine
+:param machine: the machine which should be broken when this breaks</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../index.html"
+                        title="previous chapter">Replace module or parts&#8217; documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../development/tests.html"
+                        title="next chapter">Tests</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../development/tests.html" title="Tests"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../index.html" title="Replace module or parts’ documentation!"
+             >previous</a> |</li>
+        <li><a href="../index.html">Machine simulation 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Vincent van Bergen.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
